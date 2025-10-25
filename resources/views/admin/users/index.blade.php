@@ -8,9 +8,57 @@
     <div class="alert alert-success">{{ session('status') }}</div>
   @endif
 
-  <div class="mb-3">
+  <div class="mb-3 d-flex justify-content-between align-items-center">
     <a href="{{ route('admin.users.create') }}" class="btn btn-primary btn-sm">新規ユーザー作成</a>
+    
+    <!-- 検索ボタン -->
+    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="toggleSearchForm()">
+      <i class="fas fa-search"></i> 検索を表示
+    </button>
   </div>
+
+  <!-- 検索フォーム（初期状態は非表示） -->
+  <div id="searchForm" class="card mb-4" style="display: none;">
+    <div class="card-body">
+      <form method="GET" action="{{ route('admin.users.index') }}" class="row g-3">
+        <div class="col-md-4">
+          <label for="search" class="form-label">名前・メールで検索</label>
+          <input type="text" class="form-control" id="search" name="search" 
+                 value="{{ $search }}" placeholder="名前またはメールアドレスを入力">
+        </div>
+        <div class="col-md-3">
+          <label for="role" class="form-label">ロールで絞り込み</label>
+          <select class="form-select" id="role" name="role">
+            <option value="">すべて</option>
+            <option value="admin" {{ $role === 'admin' ? 'selected' : '' }}>管理者</option>
+            <option value="teacher" {{ $role === 'teacher' ? 'selected' : '' }}>教師</option>
+            <option value="student" {{ $role === 'student' ? 'selected' : '' }}>生徒</option>
+          </select>
+        </div>
+        <div class="col-md-3 d-flex align-items-end">
+          <button type="submit" class="btn btn-outline-primary me-2">検索</button>
+          <a href="{{ route('admin.users.index') }}" class="btn btn-outline-secondary">リセット</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 検索結果の表示 -->
+  @if($search || $role)
+    <div class="alert alert-info">
+      <strong>検索結果:</strong>
+      @if($search)
+        名前・メール: "{{ $search }}"
+      @endif
+      @if($search && $role)
+        、
+      @endif
+      @if($role)
+        ロール: {{ $role === 'admin' ? '管理者' : ($role === 'teacher' ? '教師' : '生徒') }}
+      @endif
+      （{{ $users->total() }}件の結果）
+    </div>
+  @endif
 
   <table class="table table-sm">
     <thead>
@@ -56,6 +104,31 @@
 
   </table>
 
-  {{ $users->links('pagination::bootstrap-4') }}
+  {{ $users->appends(request()->query())->links('pagination::bootstrap-4') }}
 </div>
+
+<script>
+function toggleSearchForm() {
+  const searchForm = document.getElementById('searchForm');
+  const searchButton = document.querySelector('button[onclick="toggleSearchForm()"]');
+  
+  if (searchForm.style.display === 'none') {
+    searchForm.style.display = 'block';
+    searchButton.innerHTML = '<i class="fas fa-times"></i> 検索を閉じる';
+  } else {
+    searchForm.style.display = 'none';
+    searchButton.innerHTML = '<i class="fas fa-search"></i> 検索';
+  }
+}
+
+// 検索条件がある場合は検索フォームを表示
+document.addEventListener('DOMContentLoaded', function() {
+  @if($search || $role)
+    const searchForm = document.getElementById('searchForm');
+    const searchButton = document.querySelector('button[onclick="toggleSearchForm()"]');
+    searchForm.style.display = 'block';
+    searchButton.innerHTML = '<i class="fas fa-times"></i> 検索を閉じる';
+  @endif
+});
+</script>
 @endsection

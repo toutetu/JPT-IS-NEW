@@ -121,7 +121,7 @@
       </tbody>
     </table>
 
-    {{ $logs->links() }}
+    {{ $logs->links('pagination::bootstrap-4') }}
   @else
     <div class="alert alert-info">
       指定期間内に連絡帳の記録がありません。

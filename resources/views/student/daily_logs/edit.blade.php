@@ -24,8 +24,8 @@
 
     <div class="mb-3">
       <label class="form-label">体調</label>
-      <div class="d-flex justify-content-between align-items-center">
-        <small class="text-muted">悪い</small>
+      <div class="d-flex align-items-center">
+        <small class="text-muted me-2">悪い</small>
         <div class="btn-group" role="group" aria-label="体調スコア">
           @for($i=1;$i<=5;$i++)
             <input type="radio" class="btn-check" name="health_score" id="health_{{$i}}" value="{{ $i }}" 
@@ -33,14 +33,14 @@
             <label class="btn btn-outline-primary" for="health_{{$i}}">{{ $i }}</label>
           @endfor
         </div>
-        <small class="text-muted">良い</small>
+        <small class="text-muted ms-2">良い</small>
       </div>
     </div>
 
     <div class="mb-3">
       <label class="form-label">メンタル</label>
-      <div class="d-flex justify-content-between align-items-center">
-        <small class="text-muted">悪い</small>
+      <div class="d-flex align-items-center">
+        <small class="text-muted me-2">悪い</small>
         <div class="btn-group" role="group" aria-label="メンタルスコア">
           @for($i=1;$i<=5;$i++)
             <input type="radio" class="btn-check" name="mental_score" id="mental_{{$i}}" value="{{ $i }}" 
@@ -48,7 +48,7 @@
             <label class="btn btn-outline-success" for="mental_{{$i}}">{{ $i }}</label>
           @endfor
         </div>
-        <small class="text-muted">良い</small>
+        <small class="text-muted ms-2">良い</small>
       </div>
     </div>
 

@@ -155,30 +155,44 @@ class InternshipTestSeeder extends Seeder
 
     private function createStudentLogs($studentId, $studentIndex): void
     {
-        $patterns = [
-            // パターン1: 完璧な生徒（毎日提出）
-            'perfect' => ['frequency' => 1.0, 'health_range' => [4, 5], 'mental_range' => [4, 5]],
-            // パターン2: 普通の生徒（80%提出）
-            'normal' => ['frequency' => 0.8, 'health_range' => [3, 5], 'mental_range' => [3, 5]],
-            // パターン3: 体調不良の生徒（60%提出、体調低め）
-            'sick' => ['frequency' => 0.6, 'health_range' => [1, 3], 'mental_range' => [2, 4]],
-            // パターン4: 未提出の生徒（0%提出）
-            'no_submission' => ['frequency' => 0.0, 'health_range' => [1, 5], 'mental_range' => [1, 5]],
-            // パターン5: メンタル不調の生徒（70%提出、メンタル低め）
-            'mental' => ['frequency' => 0.7, 'health_range' => [2, 4], 'mental_range' => [1, 3]],
-            // パターン6: 不規則な生徒（50%提出）
-            'irregular' => ['frequency' => 0.5, 'health_range' => [2, 5], 'mental_range' => [2, 5]],
-            // パターン7: 新入生（最近始めた）
-            'new' => ['frequency' => 0.9, 'health_range' => [3, 5], 'mental_range' => [3, 5]],
+        // 各生徒の指定されたログ件数
+        $targetCounts = [
+            8 => 30,   // studentID 8: 30件
+            9 => 24,   // studentID 9: 24件
+            10 => 18,  // studentID 10: 18件
+            11 => 0,   // studentID 11: 0件
+            12 => 21,  // studentID 12: 21件
         ];
 
-        $patternKeys = array_keys($patterns);
-        $pattern = $patterns[$patternKeys[$studentIndex % count($patternKeys)]];
+        $targetCount = $targetCounts[$studentId] ?? 0;
 
-        // 過去30日分の平日データを生成
+        // パターン設定
+        $patterns = [
+            'perfect' => ['frequency' => 1.0, 'health_range' => [4, 5], 'mental_range' => [4, 5]],
+            'normal' => ['frequency' => 1.0, 'health_range' => [3, 5], 'mental_range' => [3, 5]],
+            'sick' => ['frequency' => 1.0, 'health_range' => [1, 3], 'mental_range' => [2, 4]],
+            'mental' => ['frequency' => 1.0, 'health_range' => [2, 4], 'mental_range' => [1, 3]],
+        ];
+
+        // 生徒IDに応じてパターンを選択
+        $patternKey = match($studentId) {
+            8 => 'perfect',
+            9 => 'normal', 
+            10 => 'sick',
+            11 => 'no_submission',
+            12 => 'mental',
+            default => 'normal'
+        };
+
+        if ($patternKey === 'no_submission') {
+            return; // ログを作成しない
+        }
+
+        $pattern = $patterns[$patternKey];
+
+        // 指定された件数の平日データを生成
         $dayOffset = 1;
         $submittedCount = 0;
-        $targetCount = 30;
 
         while ($submittedCount < $targetCount) {
             $targetDate = Carbon::today()->subDays($dayOffset);
@@ -191,7 +205,7 @@ class InternshipTestSeeder extends Seeder
                     $mentalScore = rand($pattern['mental_range'][0], $pattern['mental_range'][1]);
                     
                     // パターンに応じた本文を生成
-                    $body = $this->generateBody($pattern, $healthScore, $mentalScore, $targetDate);
+                    $body = $this->generateBody($patternKey, $healthScore, $mentalScore, $targetDate);
                     
                     DB::table('daily_logs')->insert([
                         'student_id' => $studentId,
@@ -214,7 +228,7 @@ class InternshipTestSeeder extends Seeder
         }
     }
 
-    private function generateBody($pattern, $healthScore, $mentalScore, $targetDate): string
+    private function generateBody($patternKey, $healthScore, $mentalScore, $targetDate): string
     {
         $bodies = [
             'perfect' => [
@@ -235,42 +249,15 @@ class InternshipTestSeeder extends Seeder
                 '体調不良で早退しました。',
                 '風邪気味で調子が悪いです。',
             ],
-            'no_submission' => [
-                'まだ一度も提出していません。',
-                '連絡帳の提出を忘れています。',
-                '提出方法が分かりません。',
-                '提出する気がありません。',
-            ],
             'mental' => [
                 '気分が沈んでいます。',
                 '最近元気が出ません。',
                 '友達関係で悩んでいます。',
                 '勉強のプレッシャーを感じています。',
             ],
-            'irregular' => [
-                '今日は学校を休みました。',
-                '遅刻してしまいました。',
-                '授業に集中できませんでした。',
-                '最近学校に行くのが億劫です。',
-            ],
-            'new' => [
-                '新しい学校生活に慣れてきました。',
-                '友達ができて嬉しいです。',
-                '授業が楽しいです。',
-                '毎日が新鮮で充実しています。',
-            ],
         ];
 
-        $patternKey = array_search($pattern, [
-            'perfect' => ['frequency' => 1.0, 'health_range' => [4, 5], 'mental_range' => [4, 5]],
-            'normal' => ['frequency' => 0.8, 'health_range' => [3, 5], 'mental_range' => [3, 5]],
-            'sick' => ['frequency' => 0.6, 'health_range' => [1, 3], 'mental_range' => [2, 4]],
-            'mental' => ['frequency' => 0.7, 'health_range' => [2, 4], 'mental_range' => [1, 3]],
-            'irregular' => ['frequency' => 0.5, 'health_range' => [2, 5], 'mental_range' => [2, 5]],
-            'new' => ['frequency' => 0.9, 'health_range' => [3, 5], 'mental_range' => [3, 5]],
-        ]);
-
-        $patternBodies = $bodies[$patternKey];
+        $patternBodies = $bodies[$patternKey] ?? $bodies['normal'];
         $baseBody = $patternBodies[array_rand($patternBodies)];
         
         return "{$baseBody} ({$targetDate->format('Y-m-d')})";

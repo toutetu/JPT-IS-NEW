@@ -10,9 +10,13 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         abort_if(\Auth::user()->role !== 'admin', 403);
+
+        // 検索パラメータを取得
+        $search = $request->get('search');
+        $role = $request->get('role');
 
         // 生徒の現在在籍クラス（is_active = true）
         $studentSub = \DB::table('enrollments')
@@ -26,7 +30,7 @@ class UserController extends Controller
             ->select('homeroom_assignments.teacher_id', 'classrooms.name as t_class_name')
             ->whereNull('homeroom_assignments.until_date');
 
-        $users = \DB::table('users')
+        $query = \DB::table('users')
             ->leftJoinSub($studentSub, 'stu', function ($join) {
                 $join->on('stu.student_id', '=', 'users.id');
             })
@@ -36,11 +40,23 @@ class UserController extends Controller
             ->select([
                 'users.id', 'users.name', 'users.email', 'users.role', 'users.created_at',
                 \DB::raw('COALESCE(stu.s_class_name, tea.t_class_name) as assigned_class'),
-            ])
-            ->orderBy('users.id', 'desc')
-            ->paginate(10);
+            ]);
 
-        return view('admin.users.index', compact('users'));
+        // 検索条件を適用
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('users.name', 'like', "%{$search}%")
+                  ->orWhere('users.email', 'like', "%{$search}%");
+            });
+        }
+
+        if ($role) {
+            $query->where('users.role', $role);
+        }
+
+        $users = $query->orderBy('users.id', 'desc')->paginate(10);
+
+        return view('admin.users.index', compact('users', 'search', 'role'));
     }
 
 
