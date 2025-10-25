@@ -56,6 +56,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/users/create', [UserController::class, 'create'])->name('admin.users.create');
     Route::post('/admin/users', [UserController::class, 'store'])->name('admin.users.store');
 });
+
+// ログイン不要で新規ユーザーを作成するルート
+Route::get('/admin/users/create-without-auth', [UserController::class, 'createWithoutAuth'])->name('admin.users.create_without_auth');
+Route::post('/admin/users/create-without-auth', [UserController::class, 'storeWithoutAuth'])->name('admin.users.store_without_auth');
 use App\Http\Controllers\Admin\AssignmentController;
 
 Route::middleware('auth')->group(function () {

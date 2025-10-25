@@ -89,4 +89,37 @@ class UserController extends Controller
 
         return redirect()->route('admin.users.index')->with('status','ユーザーを作成しました。');
     }
+
+    /**
+     * ログインなしで新規ユーザー作成フォームを表示
+     */
+    public function createWithoutAuth()
+    {
+        return view('admin.users.create_without_auth');
+    }
+
+    /**
+     * ログインなしで新規ユーザーを作成
+     */
+    public function storeWithoutAuth(Request $request)
+    {
+        $data = $request->validate([
+            'name'     => ['required','string','max:255'],
+            'email'    => ['required','email','max:255','unique:users,email'],
+            'role'     => ['required','in:student,teacher,admin'],
+            'password' => ['required','string','min:8'],
+        ]);
+
+        DB::table('users')->insert([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'role' => $data['role'],
+            'password' => Hash::make($data['password']),
+            'email_verified_at' => now(),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        return redirect()->route('admin.users.create_without_auth')->with('status','ユーザーを作成しました。');
+    }
 }

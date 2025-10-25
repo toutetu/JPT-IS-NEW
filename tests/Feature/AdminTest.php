@@ -167,6 +167,53 @@ class AdminTest extends TestCase
     }
 
     /** @test */
+    public function guest_can_create_user_without_login()
+    {
+        // ログインなしでアクセスできること
+        $response = $this->get('/admin/users/create-without-auth');
+        $response->assertStatus(200);
+        $response->assertSee('新規ユーザー作成（ログイン不要）');
+
+        // ログインなしでユーザーを作成できること
+        $response = $this->post('/admin/users/create-without-auth', [
+            'name' => 'ゲスト作成ユーザー',
+            'email' => 'guest@example.com',
+            'role' => 'student',
+            'password' => 'GuestPass123!',
+        ]);
+
+        $response->assertRedirect('/admin/users/create-without-auth');
+        $response->assertSessionHas('status', 'ユーザーを作成しました。');
+
+        // データベースにユーザーが作成されたことを確認
+        $this->assertDatabaseHas('users', [
+            'name' => 'ゲスト作成ユーザー',
+            'email' => 'guest@example.com',
+            'role' => 'student',
+        ]);
+    }
+
+    /** @test */
+    public function guest_can_create_admin_user_without_login()
+    {
+        // ログインなしで管理者ユーザーも作成できることを確認
+        $response = $this->post('/admin/users/create-without-auth', [
+            'name' => 'ゲスト作成管理者',
+            'email' => 'guest-admin@example.com',
+            'role' => 'admin',
+            'password' => 'GuestAdmin123!',
+        ]);
+
+        $response->assertRedirect('/admin/users/create-without-auth');
+
+        $this->assertDatabaseHas('users', [
+            'name' => 'ゲスト作成管理者',
+            'email' => 'guest-admin@example.com',
+            'role' => 'admin',
+        ]);
+    }
+
+    /** @test */
     public function admin_can_view_enrollment_assignment_form()
     {
         $user = User::where('email', 'admin@example.com')->first();
