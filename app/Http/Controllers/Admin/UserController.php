@@ -139,4 +139,36 @@ class UserController extends Controller
                 ->withInput();
         }
     }
+
+    public function destroy($id)
+    {
+        abort_if(Auth::user()->role !== 'admin', 403);
+
+        // 自分自身は削除できないようにする
+        if (Auth::id() == $id) {
+            return redirect()->route('admin.users.index')
+                ->with('error', '自分自身を削除することはできません。');
+        }
+
+        // ユーザーが存在するか確認
+        $user = DB::table('users')->where('id', $id)->first();
+        
+        if (!$user) {
+            return redirect()->route('admin.users.index')
+                ->with('error', 'ユーザーが見つかりません。');
+        }
+
+        // 関連データも削除（enrollments, homeroom_assignments, daily_logs）
+        DB::table('enrollments')->where('student_id', $id)->delete();
+        DB::table('homeroom_assignments')->where('teacher_id', $id)->delete();
+        
+        // daily_logsの削除（作成者として、または既読者として）
+        DB::table('daily_logs')->where('student_id', $id)->delete();
+
+        // ユーザーを削除
+        DB::table('users')->where('id', $id)->delete();
+
+        return redirect()->route('admin.users.index')
+            ->with('status', 'ユーザーを削除しました。');
+    }
 }

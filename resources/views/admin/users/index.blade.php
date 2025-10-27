@@ -8,6 +8,10 @@
     <div class="alert alert-success">{{ session('status') }}</div>
   @endif
 
+  @if (session('error'))
+    <div class="alert alert-danger">{{ session('error') }}</div>
+  @endif
+
   <div class="mb-3 d-flex justify-content-between align-items-center">
     <a href="{{ route('admin.users.create') }}" class="btn btn-primary btn-sm">新規ユーザー作成</a>
     
@@ -69,7 +73,8 @@
         <th>ロール</th>
         <th>割り当てクラス</th>  
         <th>作成日</th>
-        <th>割り当て変更</th> 
+        <th>割り当て変更</th>
+        <th>操作</th>
       </tr>
     </thead>
     <tbody>
@@ -96,9 +101,23 @@
               <span class="text-muted">—</span>
             @endif
           </td>
+          <td>
+            @if($u->id != auth()->id())
+              <form method="POST" action="{{ route('admin.users.destroy', $u->id) }}" 
+                    onsubmit="return confirm('本当にこのユーザーを削除しますか？');" style="display:inline;">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="btn btn-sm btn-outline-danger">
+                  削除
+                </button>
+              </form>
+            @else
+              <span class="text-muted">—</span>
+            @endif
+          </td>
         </tr>
       @empty
-        <tr><td colspan="7">ユーザーがいません。</td></tr>
+        <tr><td colspan="8">ユーザーがいません。</td></tr>
       @endforelse
     </tbody>
 

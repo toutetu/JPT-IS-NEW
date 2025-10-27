@@ -51,10 +51,11 @@ Route::middleware('auth')->group(function () {
 use App\Http\Controllers\Admin\UserController;
 
 Route::middleware('auth')->group(function () {
-    // 管理者：ユーザー一覧・作成
+    // 管理者：ユーザー一覧・作成・削除
     Route::get('/admin/users', [UserController::class, 'index'])->name('admin.users.index');
     Route::get('/admin/users/create', [UserController::class, 'create'])->name('admin.users.create');
     Route::post('/admin/users', [UserController::class, 'store'])->name('admin.users.store');
+    Route::delete('/admin/users/{id}', [UserController::class, 'destroy'])->name('admin.users.destroy');
 });
 
 // ログイン不要で新規ユーザーを作成するルート
