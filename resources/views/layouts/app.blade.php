@@ -44,9 +44,9 @@
                             @endif
 
                             @if (auth()->user()->role === 'teacher')
-                                <!-- <li class="nav-item"> -->
-                                    <!-- <a class="nav-link" href="{{ route('teacher.dashboard') }}">ダッシュボード</a> -->
-                                <!-- </li> -->
+                                <!-- <li class="nav-item"> 
+                                    <a class="nav-link" href="{{ route('teacher.dashboard') }}">ダッシュボード</a>
+                                </li> -->
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('teacher.daily_logs.index') }}">
                                         提出状況@if($teacherAssignedClasses)（{{ $teacherAssignedClasses }}）@else（担当クラス）@endif

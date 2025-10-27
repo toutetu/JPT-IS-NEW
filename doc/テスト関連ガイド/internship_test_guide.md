@@ -139,8 +139,20 @@ JPT-IS-NEW アプリケーションのインターンシップ用テストガイ
 ## テスト実行手順
 
 ### 1. データベース初期化
+
+#### 通常の環境
 ```bash
 php artisan migrate:fresh --seed --class=InternshipTestSeeder
+```
+
+#### Laravel Cloud環境
+```bash
+php artisan migrate:fresh --seed --class=InternshipTestSeeder --force
+```
+
+#### 既存データを保持してシーダーのみ実行
+```bash
+php artisan db:seed --class=InternshipTestSeeder
 ```
 
 ### 2. アプリケーション起動
@@ -166,9 +178,15 @@ php artisan serve
 ## トラブルシューティング
 
 ### ログインできない場合
-1. データベースの初期化: `php artisan migrate:fresh --seed --class=InternshipTestSeeder`
-2. アプリケーションの再起動: `php artisan serve`
+1. **通常の環境**: `php artisan migrate:fresh --seed --class=InternshipTestSeeder`
+2. **Laravel Cloud環境**: `php artisan migrate:fresh --seed --class=InternshipTestSeeder --force`
+3. アプリケーションの再起動: `php artisan serve`
 
 ### データが表示されない場合
-1. シーダーの実行確認: `php artisan db:seed --class=InternshipTestSeeder`
-2. キャッシュのクリア: `php artisan optimize:clear`
+1. **シーダーの実行確認**: `php artisan db:seed --class=InternshipTestSeeder`
+2. **キャッシュのクリア**: `php artisan optimize:clear`
+
+### Laravel Cloud環境での注意点
+- プロダクション環境では`--force`オプションが必要
+- `migrate:fresh`コマンドは既存データを完全に削除します
+- データベースのバックアップを取ることを推奨します
