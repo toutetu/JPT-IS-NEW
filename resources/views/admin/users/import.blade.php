@@ -25,7 +25,7 @@
 
   <div class="card mb-3">
     <div class="card-body">
-      <h5 class="card-title">CSVファイル形式</h5>
+      <h5 class="card-title">CSVファイル形式（新規ユーザー登録用）</h5>
       <p>CSVファイルは以下の形式で作成してください。</p>
       <table class="table table-sm table-bordered">
         <thead>
@@ -45,12 +45,19 @@
           </tr>
         </tbody>
       </table>
-      <p class="text-muted small mb-0">
-        ※ ヘッダー行は不要です<br>
-        ※ ロールは student, teacher, admin のいずれか<br>
-        ※ パスワードは8文字以上<br>
-        ※ メールアドレスは重複不可
-      </p>
+      <div class="alert alert-info mb-0 mt-2">
+        <strong>CSVファイルの要件:</strong>
+        <ul class="mb-0">
+          <li>ヘッダー行は不要です</li>
+          <li>名前：文字列（最大255文字）</li>
+          <li>メール：メールアドレス形式、重複不可</li>
+          <li>ロール：student, teacher, admin のいずれか</li>
+          <li>パスワード：8文字以上</li>
+          <li>文字コード：UTF-8（Excelで保存する場合は「CSV UTF-8（コンマ区切り）」を選択）</li>
+          <li>区切り文字：カンマ（,）</li>
+          <li>最大ファイルサイズ：1MB</li>
+        </ul>
+      </div>
     </div>
   </div>
 
@@ -70,10 +77,16 @@
   </form>
 
   <div class="mt-4">
-    <h6>CSVファイルの作成例</h6>
-    <pre class="bg-light p-3 border rounded"><code>山田太郎,yamada@example.com,student,Passw0rd!
+    <h6>CSVファイルの作成例（新規ユーザー登録用）</h6>
+    <div class="alert alert-light border">
+      <p class="mb-2"><strong>例：生徒40名を一括登録する場合</strong></p>
+      <pre class="bg-light p-3 border rounded mb-0" style="max-height: 300px; overflow-y: auto;"><code>山田太郎,yamada@example.com,student,Passw0rd!
 佐藤花子,sato@example.com,student,Passw0rd!
-鈴木一郎,suzuki@example.com,teacher,Passw0rd!</code></pre>
+鈴木一郎,suzuki@example.com,student,Passw0rd!
+田中花子,tanaka@example.com,student,Passw0rd!
+山本太郎,yamamoto@example.com,student,Passw0rd!
+（以下、同様に続く...）</code></pre>
+    </div>
   </div>
 </div>
 @endsection

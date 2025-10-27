@@ -25,7 +25,7 @@
 
   <div class="card mb-3">
     <div class="card-body">
-      <h5 class="card-title">CSVファイル形式</h5>
+      <h5 class="card-title">CSVファイル形式（クラス割り当て用）</h5>
       <p>CSVファイルは以下の形式で作成してください。</p>
       <table class="table table-sm table-bordered">
         <thead>
@@ -41,11 +41,17 @@
           </tr>
         </tbody>
       </table>
-      <p class="text-muted small mb-0">
-        ※ ヘッダー行は不要です<br>
-        ※ メールアドレスは既存の生徒のものである必要があります<br>
-        ※ クラス名は完全一致で検索されます
-      </p>
+      <div class="alert alert-info mb-0 mt-2">
+        <strong>CSVファイルの要件:</strong>
+        <ul class="mb-0">
+          <li>ヘッダー行は不要です</li>
+          <li>メールアドレス：既存の生徒のものである必要があります</li>
+          <li>クラス名：登録済みクラス名と完全一致である必要があります</li>
+          <li>文字コード：UTF-8（Excelで保存する場合は「CSV UTF-8（コンマ区切り）」を選択）</li>
+          <li>区切り文字：カンマ（,）</li>
+          <li>最大ファイルサイズ：1MB</li>
+        </ul>
+      </div>
     </div>
   </div>
 
@@ -91,11 +97,19 @@
   </form>
 
   <div class="mt-4">
-    <h6>CSVファイルの作成例</h6>
-    <pre class="bg-light p-3 border rounded"><code>student001@example.com,1年A組
+    <h6>CSVファイルの作成例（クラス割り当て用）</h6>
+    <div class="alert alert-light border">
+      <p class="mb-2"><strong>例：生徒40名のクラスを一括変更する場合</strong></p>
+      <pre class="bg-light p-3 border rounded mb-0" style="max-height: 300px; overflow-y: auto;"><code>student001@example.com,1年A組
 student002@example.com,1年A組
-student003@example.com,1年B組
-student004@example.com,2年A組</code></pre>
+student003@example.com,1年A組
+student004@example.com,1年B組
+student005@example.com,1年B組
+student006@example.com,1年B組
+student007@example.com,2年A組
+student008@example.com,2年A組
+（以下、同様に続く...）</code></pre>
+    </div>
   </div>
 </div>
 @endsection

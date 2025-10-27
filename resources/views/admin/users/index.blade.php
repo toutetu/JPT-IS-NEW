@@ -15,7 +15,8 @@
   <div class="mb-3 d-flex justify-content-between align-items-center">
     <div>
       <a href="{{ route('admin.users.create') }}" class="btn btn-primary btn-sm">新規ユーザー作成</a>
-      <a href="{{ route('admin.users.import') }}" class="btn btn-success btn-sm">CSV一括登録</a>
+      <a href="{{ route('admin.users.import') }}" class="btn btn-success btn-sm">新規ユーザー作成（CSV一括登録）</a>
+      <a href="{{ route('admin.assign.enrollment.import') }}" class="btn btn-info btn-sm">在籍を変更（CSV一括登録）</a>
       <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteUserModal">
         <i class="fas fa-trash"></i> ユーザーを削除
       </button>
