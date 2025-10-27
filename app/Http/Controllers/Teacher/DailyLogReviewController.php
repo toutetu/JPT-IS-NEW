@@ -17,10 +17,25 @@ class DailyLogReviewController extends Controller
     {
         abort_if(\Auth::user()->role !== 'teacher', 403);
 
-        // 日付フィルタ（指定なければ本日）
+        // 日付フィルタ（指定なければ前登校日）
         $date = $request->query('date');
-        $selected = $date ? \Carbon\Carbon::parse($date)->toDateString()
-                        : \Carbon\Carbon::today()->toDateString();
+        if ($date) {
+            $selected = \Carbon\Carbon::parse($date)->toDateString();
+        } else {
+            // 前登校日を計算（平日の前日）
+            $today = \Carbon\Carbon::today();
+            $dayOfWeek = $today->dayOfWeek; // 0=日曜日, 1=月曜日, ..., 6=土曜日
+            
+            if ($dayOfWeek == 1) { // 月曜日
+                $selected = $today->subDays(3)->toDateString(); // 前の金曜日
+            } elseif ($dayOfWeek == 0) { // 日曜日
+                $selected = $today->subDays(2)->toDateString(); // 前の金曜日
+            } elseif ($dayOfWeek == 6) { // 土曜日
+                $selected = $today->subDays(1)->toDateString(); // 前の金曜日
+            } else { // 火曜日〜金曜日
+                $selected = $today->subDay()->toDateString(); // 前日
+            }
+        }
 
         // この先生の担当クラスの生徒ID
         $studentIds = \DB::table('homeroom_assignments')
@@ -68,8 +83,27 @@ class DailyLogReviewController extends Controller
             ->paginate(20)
             ->appends(['date' => $selected]); // ページング維持
 
+        // 担当クラス情報を取得
+        $assignedClasses = \DB::table('homeroom_assignments')
+            ->join('classrooms', 'classrooms.id', '=', 'homeroom_assignments.classroom_id')
+            ->join('grades', 'grades.id', '=', 'classrooms.grade_id')
+            ->where('homeroom_assignments.teacher_id', \Auth::id())
+            ->whereNull('homeroom_assignments.until_date') // 現在有効な担当のみ
+            ->select(
+                'classrooms.name as classroom_name',
+                'grades.name as grade_name'
+            )
+            ->orderBy('grades.id')
+            ->orderBy('classrooms.name')
+            ->get();
+
+        // クラス名を結合して表示用文字列を作成
+        $teacherAssignedClasses = $assignedClasses->map(function ($class) {
+            return $class->classroom_name; // 学年名は削除（クラス名に既に含まれている）
+        })->implode('・');
+
         return view('teacher.daily_logs.index', compact(
-            'logs', 'selected', 'totalStudents', 'submittedCount', 'unreadCount', 'unsubmitted'
+            'logs', 'selected', 'totalStudents', 'submittedCount', 'unreadCount', 'unsubmitted', 'teacherAssignedClasses'
         ));
     }
 

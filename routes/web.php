@@ -26,8 +26,13 @@ Route::middleware('auth')->group(function () {
 
 
 use App\Http\Controllers\Teacher\DailyLogReviewController;
+use App\Http\Controllers\Teacher\DashboardController;
 
 Route::middleware('auth')->group(function () {
+    // 先生用：ダッシュボード（担当クラス表示）
+    Route::get('/teacher/dashboard', [DashboardController::class, 'index'])
+        ->name('teacher.dashboard');
+
     // 先生用：担当クラスの提出一覧（直近7日）
     Route::get('/teacher/daily-logs', [DailyLogReviewController::class, 'index'])
         ->name('teacher.daily_logs.index');

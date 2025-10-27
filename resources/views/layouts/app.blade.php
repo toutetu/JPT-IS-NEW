@@ -12,6 +12,9 @@
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <!-- Scripts -->
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
@@ -41,11 +44,16 @@
                             @endif
 
                             @if (auth()->user()->role === 'teacher')
+                                <!-- <li class="nav-item"> -->
+                                    <!-- <a class="nav-link" href="{{ route('teacher.dashboard') }}">ダッシュボード</a> -->
+                                <!-- </li> -->
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('teacher.daily_logs.index') }}">提出一覧（担任）</a>
+                                    <a class="nav-link" href="{{ route('teacher.daily_logs.index') }}">
+                                        提出状況@if($teacherAssignedClasses)（{{ $teacherAssignedClasses }}）@else（担当クラス）@endif
+                                    </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('teacher.students.index') }}">生徒過去記録</a>
+                                    <a class="nav-link" href="{{ route('teacher.students.index') }}">生徒別過去記録</a>
                                 </li>
                             @endif
 

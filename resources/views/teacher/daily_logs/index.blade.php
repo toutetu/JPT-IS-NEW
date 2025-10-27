@@ -3,7 +3,7 @@
 @section('content')
 @php($w = ['日','月','火','水','木','金','土'])
 <div class="container">
-  <h1 class="h4 mb-3">提出状況（担当クラス）</h1>
+  <h1 class="h4 mb-3">提出状況@if($teacherAssignedClasses)（{{ $teacherAssignedClasses }}）@else（担当クラス）@endif</h1>
 
   {{-- 日付フィルタ --}}
   <form method="get" class="row g-2 mb-3">
