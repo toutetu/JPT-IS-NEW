@@ -2,7 +2,10 @@
 
 @section('content')
 <div class="container" style="max-width:820px;">
-  <h1 class="h4 mb-3">生徒の在籍割当</h1>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h4 mb-0">生徒の在籍割当</h1>
+    <a href="{{ route('admin.assign.enrollment.import') }}" class="btn btn-success btn-sm">CSV一括割り当て</a>
+  </div>
 
   @if (session('status'))
     <div class="alert alert-success">{{ session('status') }}</div>

@@ -70,6 +70,8 @@ Route::middleware('auth')->group(function () {
     // 管理者：生徒の在籍割当（enrollments）
     Route::get('/admin/assign/enrollment', [AssignmentController::class, 'enrollmentForm'])->name('admin.assign.enrollment.form');
     Route::post('/admin/assign/enrollment', [AssignmentController::class, 'enrollmentStore'])->name('admin.assign.enrollment.store');
+    Route::get('/admin/assign/enrollment/import', [AssignmentController::class, 'enrollmentImportForm'])->name('admin.assign.enrollment.import');
+    Route::post('/admin/assign/enrollment/import', [AssignmentController::class, 'enrollmentImportCSV'])->name('admin.assign.enrollment.import.csv');
 
     // 管理者：担任のクラス割当（homeroom_assignments）
     Route::get('/admin/assign/homeroom', [AssignmentController::class, 'homeroomForm'])->name('admin.assign.homeroom.form');
