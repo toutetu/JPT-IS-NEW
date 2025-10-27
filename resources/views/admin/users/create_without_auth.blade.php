@@ -14,6 +14,24 @@
             <div class="alert alert-success">{{ session('status') }}</div>
         @endif
 
+        @if (session('error'))
+            <div class="alert alert-danger">{{ session('error') }}</div>
+        @endif
+
+        @if (session('success'))
+            <div class="alert alert-success">✅ ユーザー作成が完了しました！</div>
+        @endif
+
+        <!-- デバッグ情報 -->
+        @if(config('app.debug'))
+            <div class="alert alert-info">
+                <strong>デバッグ情報:</strong><br>
+                Status: {{ session('status') ?? 'なし' }}<br>
+                Success: {{ session('success') ? 'true' : 'false' }}<br>
+                Error: {{ session('error') ?? 'なし' }}
+            </div>
+        @endif
+
         @if ($errors->any())
             <div class="alert alert-danger">
                 <ul class="mb-0">
@@ -25,7 +43,6 @@
         @endif
 
         <form method="post" action="{{ route('admin.users.store_without_auth') }}">
-            @csrf
 
             <div class="mb-3">
                 <label class="form-label">名前</label>

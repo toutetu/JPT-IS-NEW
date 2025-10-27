@@ -103,23 +103,40 @@ class UserController extends Controller
      */
     public function storeWithoutAuth(Request $request)
     {
-        $data = $request->validate([
-            'name'     => ['required','string','max:255'],
-            'email'    => ['required','email','max:255','unique:users,email'],
-            'role'     => ['required','in:student,teacher,admin'],
-            'password' => ['required','string','min:8'],
-        ]);
+        try {
+            $data = $request->validate([
+                'name'     => ['required','string','max:255'],
+                'email'    => ['required','email','max:255','unique:users,email'],
+                'role'     => ['required','in:student,teacher,admin'],
+                'password' => ['required','string','min:8'],
+            ]);
 
-        DB::table('users')->insert([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'role' => $data['role'],
-            'password' => Hash::make($data['password']),
-            'email_verified_at' => now(),
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+            DB::table('users')->insert([
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'role' => $data['role'],
+                'password' => Hash::make($data['password']),
+                'email_verified_at' => now(),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
 
-        return redirect()->route('admin.users.create_without_auth')->with('status','ユーザーを作成しました。');
+            // デバッグ用ログ
+            \Log::info('ユーザー作成成功: ' . $data['email']);
+
+            return redirect()->route('admin.users.create_without_auth')
+                ->with('status', 'ユーザーを作成しました。')
+                ->with('success', true);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // バリデーションエラーの場合、エラーメッセージと共にリダイレクト
+            return redirect()->route('admin.users.create_without_auth')
+                ->withErrors($e->validator)
+                ->withInput();
+        } catch (\Exception $e) {
+            // その他のエラーの場合
+            return redirect()->route('admin.users.create_without_auth')
+                ->with('error', 'ユーザー作成中にエラーが発生しました: ' . $e->getMessage())
+                ->withInput();
+        }
     }
 }

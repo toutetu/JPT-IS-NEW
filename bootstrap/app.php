@@ -11,7 +11,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        // ログインなしのユーザー作成ルートでCSRF保護を無効化
+        $middleware->validateCsrfTokens(except: [
+            'admin/users/create-without-auth'
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
