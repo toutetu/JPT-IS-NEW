@@ -13,7 +13,13 @@
   @endif
 
   <div class="mb-3 d-flex justify-content-between align-items-center">
-    <a href="{{ route('admin.users.create') }}" class="btn btn-primary btn-sm">新規ユーザー作成</a>
+    <div>
+      <a href="{{ route('admin.users.create') }}" class="btn btn-primary btn-sm">新規ユーザー作成</a>
+      <a href="{{ route('admin.users.import') }}" class="btn btn-success btn-sm">CSV一括登録</a>
+      <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteUserModal">
+        <i class="fas fa-trash"></i> ユーザーを削除
+      </button>
+    </div>
     
     <!-- 検索ボタン -->
     <button type="button" class="btn btn-outline-secondary btn-sm" onclick="toggleSearchForm()">
@@ -74,7 +80,6 @@
         <th>割り当てクラス</th>  
         <th>作成日</th>
         <th>割り当て変更</th>
-        <th>操作</th>
       </tr>
     </thead>
     <tbody>
@@ -101,29 +106,45 @@
               <span class="text-muted">—</span>
             @endif
           </td>
-          <td>
-            @if($u->id != auth()->id())
-              <form method="POST" action="{{ route('admin.users.destroy', $u->id) }}" 
-                    onsubmit="return confirm('本当にこのユーザーを削除しますか？');" style="display:inline;">
-                @csrf
-                @method('DELETE')
-                <button type="submit" class="btn btn-sm btn-outline-danger">
-                  削除
-                </button>
-              </form>
-            @else
-              <span class="text-muted">—</span>
-            @endif
-          </td>
         </tr>
       @empty
-        <tr><td colspan="8">ユーザーがいません。</td></tr>
+        <tr><td colspan="7">ユーザーがいません。</td></tr>
       @endforelse
     </tbody>
 
   </table>
 
   {{ $users->appends(request()->query())->links('pagination::bootstrap-4') }}
+</div>
+
+<!-- 削除ユーザー選択モーダル -->
+<div class="modal fade" id="deleteUserModal" tabindex="-1" aria-labelledby="deleteUserModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title text-danger" id="deleteUserModalLabel">ユーザー削除</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p class="text-danger"><strong>警告:</strong> 削除したいユーザーを選択してください。この操作は取り消すことができません。</p>
+        <label for="deleteUserSelect" class="form-label">削除するユーザーを選択:</label>
+        <select class="form-select" id="deleteUserSelect">
+          <option value="">-- ユーザーを選択 --</option>
+          @foreach($users as $u)
+            @if($u->id != auth()->id())
+              <option value="{{ $u->id }}" data-name="{{ $u->name }}" data-email="{{ $u->email }}">
+                ID: {{ $u->id }} - {{ $u->name }} ({{ $u->email }})
+              </option>
+            @endif
+          @endforeach
+        </select>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
+        <button type="button" class="btn btn-danger" id="confirmDeleteBtn" disabled>削除ページへ</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -148,6 +169,25 @@ document.addEventListener('DOMContentLoaded', function() {
     searchForm.style.display = 'block';
     searchButton.innerHTML = '<i class="fas fa-times"></i> 検索を閉じる';
   @endif
+
+  // 削除ユーザー選択の制御
+  const deleteUserSelect = document.getElementById('deleteUserSelect');
+  const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+  
+  deleteUserSelect.addEventListener('change', function() {
+    if (this.value) {
+      confirmDeleteBtn.disabled = false;
+    } else {
+      confirmDeleteBtn.disabled = true;
+    }
+  });
+
+  confirmDeleteBtn.addEventListener('click', function() {
+    const userId = deleteUserSelect.value;
+    if (userId) {
+      window.location.href = '/admin/users/' + userId + '/delete';
+    }
+  });
 });
 </script>
 @endsection

@@ -55,6 +55,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/users', [UserController::class, 'index'])->name('admin.users.index');
     Route::get('/admin/users/create', [UserController::class, 'create'])->name('admin.users.create');
     Route::post('/admin/users', [UserController::class, 'store'])->name('admin.users.store');
+    Route::get('/admin/users/import', [UserController::class, 'importForm'])->name('admin.users.import');
+    Route::post('/admin/users/import', [UserController::class, 'importCSV'])->name('admin.users.import.csv');
+    Route::get('/admin/users/{id}/delete', [UserController::class, 'delete'])->name('admin.users.delete');
     Route::delete('/admin/users/{id}', [UserController::class, 'destroy'])->name('admin.users.destroy');
 });
 
