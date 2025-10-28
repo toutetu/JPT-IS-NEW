@@ -3,64 +3,36 @@
 namespace App\Http\Controllers\Teacher;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Services\DailyLogService;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
+    public function __construct(
+        private DailyLogService $dailyLogService
+    ) {}
+
     public function index()
     {
         abort_if(Auth::user()->role !== 'teacher', 403);
 
         // この先生の担当クラス情報を取得
-        $assignedClasses = DB::table('homeroom_assignments')
-            ->join('classrooms', 'classrooms.id', '=', 'homeroom_assignments.classroom_id')
-            ->join('grades', 'grades.id', '=', 'classrooms.grade_id')
-            ->where('homeroom_assignments.teacher_id', Auth::id())
-            ->whereNull('homeroom_assignments.until_date') // 現在有効な担当のみ
-            ->select(
-                'classrooms.id as classroom_id',
-                'classrooms.name as classroom_name',
-                'grades.name as grade_name',
-                'homeroom_assignments.since_date'
-            )
-            ->orderBy('grades.id')
-            ->orderBy('classrooms.name')
-            ->get();
+        $assignedClasses = \App\Models\HomeroomAssignment::getAssignedClassesForTeacher(Auth::id());
 
         // 各クラスの生徒数を取得
         foreach ($assignedClasses as $class) {
-            $class->student_count = DB::table('enrollments')
-                ->where('classroom_id', $class->classroom_id)
-                ->where('is_active', true)
-                ->count();
+            $classroom = \App\Models\Classroom::find($class['classroom_id']);
+            $class['student_count'] = $classroom->current_student_count;
         }
 
-        // 今日の提出状況のサマリー
-        $today = now()->toDateString();
-        $totalStudents = $assignedClasses->sum('student_count');
-        
-        $submittedToday = DB::table('homeroom_assignments')
-            ->join('classrooms', 'classrooms.id', '=', 'homeroom_assignments.classroom_id')
-            ->join('enrollments', 'enrollments.classroom_id', '=', 'classrooms.id')
-            ->join('daily_logs', 'daily_logs.student_id', '=', 'enrollments.student_id')
-            ->where('homeroom_assignments.teacher_id', Auth::id())
-            ->whereNull('homeroom_assignments.until_date')
-            ->where('enrollments.is_active', true)
-            ->where('daily_logs.target_date', $today)
-            ->count();
+        // 今日の提出状況のサマリーを取得
+        $todayStats = $this->dailyLogService->getTeacherTodayStats(Auth::id());
 
-        $unreadToday = DB::table('homeroom_assignments')
-            ->join('classrooms', 'classrooms.id', '=', 'homeroom_assignments.classroom_id')
-            ->join('enrollments', 'enrollments.classroom_id', '=', 'classrooms.id')
-            ->join('daily_logs', 'daily_logs.student_id', '=', 'enrollments.student_id')
-            ->where('homeroom_assignments.teacher_id', Auth::id())
-            ->whereNull('homeroom_assignments.until_date')
-            ->where('enrollments.is_active', true)
-            ->where('daily_logs.target_date', $today)
-            ->whereNull('daily_logs.read_at')
-            ->count();
+        // ビューで期待されている変数名に合わせる
+        $totalStudents = $todayStats['total_students'];
+        $submittedToday = $todayStats['submitted_today'];
+        $unreadToday = $todayStats['unread_today'];
+        $today = $todayStats['today'];
 
         return view('teacher.dashboard', compact(
             'assignedClasses',
