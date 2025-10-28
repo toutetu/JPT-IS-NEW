@@ -2,10 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
@@ -81,8 +77,4 @@ Route::middleware('auth')->group(function () {
     // 管理者：担任のクラス割当（homeroom_assignments）
     Route::get('/admin/assign/homeroom', [AssignmentController::class, 'homeroomForm'])->name('admin.assign.homeroom.form');
     Route::post('/admin/assign/homeroom', [AssignmentController::class, 'homeroomStore'])->name('admin.assign.homeroom.store');
-});
-
-Route::get('/', function () {
-    return redirect()->route('login');
 });

@@ -30,7 +30,7 @@ class HomeController extends Controller
             case 'student':
                 return redirect()->route('student.daily_logs.index');
             case 'teacher':
-                return redirect()->route('teacher.dashboard');
+                return redirect()->route('teacher.daily_logs.index');
             case 'admin':
                 return redirect()->route('admin.users.index');
             default:

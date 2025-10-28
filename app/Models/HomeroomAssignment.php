@@ -83,12 +83,12 @@ class HomeroomAssignment extends Model
     {
         return static::forTeacher($teacherId)
             ->current()
-            ->with('classroom.enrollments')
+            ->with(['classroom.enrollments' => function ($query) {
+                $query->where('is_active', true);
+            }])
             ->get()
             ->flatMap(function ($assignment) {
-                return $assignment->classroom->enrollments
-                    ->where('is_active', true)
-                    ->pluck('student_id');
+                return $assignment->classroom->enrollments->pluck('student_id');
             })
             ->unique()
             ->values();

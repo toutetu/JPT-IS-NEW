@@ -17,37 +17,53 @@ class DailyLogReviewController extends Controller
     {
         abort_if(\Auth::user()->role !== 'teacher', 403);
 
-        // 日付フィルタ（指定なければ前登校日）
-        $date = $request->query('date');
-        $selected = $date ?: $this->dailyLogService->getPreviousSchoolDay();
+        try {
+            // 日付フィルタ（指定なければ前登校日）
+            $date = $request->query('date');
+            $selected = $date ?: $this->dailyLogService->getPreviousSchoolDay();
 
-        // 担当クラスの生徒ID一覧を取得
-        $studentIds = \App\Models\HomeroomAssignment::getStudentIdsForTeacher(\Auth::id());
+            // 担当クラスの生徒ID一覧を取得
+            $studentIds = \App\Models\HomeroomAssignment::getStudentIdsForTeacher(\Auth::id());
 
-        // 提出状況のサマリーを取得
-        $stats = $this->dailyLogService->getTeacherClassSubmissionStats(\Auth::id(), $selected);
+            // 提出状況のサマリーを取得
+            $stats = $this->dailyLogService->getTeacherClassSubmissionStats(\Auth::id(), $selected);
 
-        // 一覧を取得（ページネーション対応）
-        $logs = \App\Models\DailyLog::whereIn('student_id', $studentIds)
-            ->forDate($selected)
-            ->with('student')
-            ->orderBy('student_id')
-            ->paginate(20)
-            ->appends(['date' => $selected]);
+            // 一覧を取得（ページネーション対応）
+            $logs = \App\Models\DailyLog::whereIn('student_id', $studentIds)
+                ->forDate($selected)
+                ->with('student')
+                ->orderBy('student_id')
+                ->paginate(20)
+                ->appends(['date' => $selected]);
 
-        // 担当クラス情報を取得
-        $assignedClasses = \App\Models\HomeroomAssignment::getAssignedClassesForTeacher(\Auth::id());
-        $teacherAssignedClasses = $assignedClasses->pluck('classroom_name')->implode('・');
+            // 担当クラス情報を取得
+            $assignedClasses = \App\Models\HomeroomAssignment::getAssignedClassesForTeacher(\Auth::id());
+            $teacherAssignedClasses = $assignedClasses->pluck('classroom_name')->implode('・');
 
-        // ビューで期待されている変数名に合わせる
-        $totalStudents = $stats['total_students'];
-        $submittedCount = $stats['submitted_count'];
-        $unreadCount = $stats['unread_count'];
-        $unsubmitted = $stats['unsubmitted'];
+            // ビューで期待されている変数名に合わせる
+            $totalStudents = $stats['total_students'];
+            $submittedCount = $stats['submitted_count'];
+            $unreadCount = $stats['unread_count'];
+            $unsubmitted = $stats['unsubmitted'];
 
-        return view('teacher.daily_logs.index', compact(
-            'logs', 'selected', 'totalStudents', 'submittedCount', 'unreadCount', 'unsubmitted', 'teacherAssignedClasses'
-        ));
+            return view('teacher.daily_logs.index', compact(
+                'logs', 'selected', 'totalStudents', 'submittedCount', 'unreadCount', 'unsubmitted', 'teacherAssignedClasses'
+            ));
+        } catch (\Exception $e) {
+            \Log::error('TeacherController index error: ' . $e->getMessage());
+            \Log::error('Stack trace: ' . $e->getTraceAsString());
+            
+            // エラーが発生した場合は空のデータで表示
+            return view('teacher.daily_logs.index', [
+                'logs' => collect()->paginate(20),
+                'selected' => now()->toDateString(),
+                'totalStudents' => 0,
+                'submittedCount' => 0,
+                'unreadCount' => 0,
+                'unsubmitted' => collect(),
+                'teacherAssignedClasses' => 'エラーが発生しました'
+            ]);
+        }
     }
 
 
