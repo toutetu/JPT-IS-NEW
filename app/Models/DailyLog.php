@@ -135,4 +135,43 @@ class DailyLog extends Model
             'read_by' => $teacherId,
         ]);
     }
+
+    /**
+     * グラフ用データを取得
+     */
+    public static function getGraphData(int $studentId, ?string $dateFrom = null, ?string $dateTo = null): array
+    {
+        $query = static::where('student_id', $studentId)
+            ->orderBy('target_date');
+
+        // グラフ用の期間フィルタ
+        if ($dateFrom) {
+            $query->where('target_date', '>=', $dateFrom);
+        } else {
+            // デフォルトは過去90日間
+            $query->where('target_date', '>=', now()->subDays(90)->toDateString());
+        }
+
+        if ($dateTo) {
+            $query->where('target_date', '<=', $dateTo);
+        }
+
+        $logs = $query->get();
+
+        $labels = [];
+        $healthScores = [];
+        $mentalScores = [];
+
+        foreach ($logs as $log) {
+            $labels[] = \Carbon\Carbon::parse($log->target_date)->format('m/d');
+            $healthScores[] = $log->health_score;
+            $mentalScores[] = $log->mental_score;
+        }
+
+        return [
+            'labels' => $labels,
+            'healthScores' => $healthScores,
+            'mentalScores' => $mentalScores,
+        ];
+    }
 }

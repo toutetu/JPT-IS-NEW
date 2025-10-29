@@ -25,6 +25,57 @@
     </div>
   </div>
 
+  {{-- グラフ表示セクション --}}
+  <div class="card mb-3">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h5 class="mb-0">メンタルヘルス・体調グラフ</h5>
+      <button type="button" class="btn btn-outline-primary btn-sm" onclick="toggleGraph()" id="toggleGraphBtn">
+        グラフを表示
+      </button>
+    </div>
+    <div class="card-body" id="graphSection" style="display: none;">
+      {{-- グラフ用期間選択 --}}
+      <div class="row mb-3">
+        <div class="col-md-8">
+          <form method="get" class="row g-2" id="graphForm">
+            <input type="hidden" name="date_from" value="{{ $dateFrom }}">
+            <input type="hidden" name="date_to" value="{{ $dateTo }}">
+            <div class="col-auto">
+              <label class="col-form-label">グラフ期間:</label>
+            </div>
+            <div class="col-auto">
+              <input type="date" name="graph_date_from" class="form-control" value="{{ $graphDateFrom }}" id="graphDateFrom">
+            </div>
+            <div class="col-auto">
+              <label class="col-form-label">〜</label>
+            </div>
+            <div class="col-auto">
+              <input type="date" name="graph_date_to" class="form-control" value="{{ $graphDateTo }}" id="graphDateTo">
+            </div>
+            <div class="col-auto">
+              <button type="submit" class="btn btn-outline-primary btn-sm">グラフ更新</button>
+            </div>
+            <div class="col-auto">
+              <button type="button" class="btn btn-outline-secondary btn-sm" onclick="resetGraphPeriod()">リセット</button>
+            </div>
+          </form>
+        </div>
+        <div class="col-md-4 text-end">
+          <small class="text-muted">
+            グラフ期間を指定しない場合は過去90日間を表示します。
+          </small>
+        </div>
+      </div>
+
+      {{-- グラフ表示エリア --}}
+      <div class="row">
+        <div class="col-12">
+          <canvas id="healthChart" width="400" height="200"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
   {{-- 日付フィルタ --}}
   <div class="card mb-3">
     <div class="card-header">期間指定</div>
@@ -139,4 +190,120 @@
 </div>
 @endsection
 
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// グラフデータ
+const graphData = @json($graphData);
+let healthChart = null;
 
+// グラフの表示/非表示を切り替え
+function toggleGraph() {
+    const graphSection = document.getElementById('graphSection');
+    const toggleBtn = document.getElementById('toggleGraphBtn');
+    
+    if (graphSection.style.display === 'none') {
+        graphSection.style.display = 'block';
+        toggleBtn.textContent = 'グラフを非表示';
+        
+        // グラフがまだ作成されていない場合は作成
+        if (!healthChart) {
+            createChart();
+        }
+    } else {
+        graphSection.style.display = 'none';
+        toggleBtn.textContent = 'グラフを表示';
+    }
+}
+
+// グラフリセット関数
+function resetGraphPeriod() {
+    document.getElementById('graphDateFrom').value = '';
+    document.getElementById('graphDateTo').value = '';
+    document.getElementById('graphForm').submit();
+}
+
+// Chart.jsでグラフを作成
+function createChart() {
+    const ctx = document.getElementById('healthChart').getContext('2d');
+    
+    healthChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: graphData.labels,
+            datasets: [
+                {
+                    label: '体調スコア',
+                    data: graphData.healthScores,
+                    borderColor: 'rgb(75, 192, 192)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.1)',
+                    tension: 0.1,
+                    fill: false
+                },
+                {
+                    label: 'メンタルスコア',
+                    data: graphData.mentalScores,
+                    borderColor: 'rgb(255, 99, 132)',
+                    backgroundColor: 'rgba(255, 99, 132, 0.1)',
+                    tension: 0.1,
+                    fill: false
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 5,
+                    ticks: {
+                        stepSize: 1
+                    },
+                    title: {
+                        display: true,
+                        text: 'スコア'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: '日付'
+                    }
+                }
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: '{{ $student->name }}のメンタルヘルス・体調推移'
+                },
+                legend: {
+                    display: true,
+                    position: 'top'
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false
+                }
+            },
+            interaction: {
+                mode: 'nearest',
+                axis: 'x',
+                intersect: false
+            }
+        }
+    });
+}
+
+// ページ読み込み時の初期化
+document.addEventListener('DOMContentLoaded', function() {
+    // グラフ期間が指定されている場合は自動でグラフを表示
+    const graphDateFrom = document.getElementById('graphDateFrom').value;
+    const graphDateTo = document.getElementById('graphDateTo').value;
+    
+    if (graphDateFrom || graphDateTo) {
+        toggleGraph();
+    }
+});
+</script>
+@endpush

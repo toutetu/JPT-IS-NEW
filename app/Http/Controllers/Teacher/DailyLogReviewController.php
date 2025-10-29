@@ -150,13 +150,20 @@ class DailyLogReviewController extends Controller
         $student->classroom_name = $currentEnrollment->classroom->name;
         $student->grade_name = $currentEnrollment->classroom->grade->name;
 
-        // 日付フィルタ
+        // 日付フィルタ（ログ表示用）
         $dateFrom = $request->query('date_from');
         $dateTo = $request->query('date_to');
 
+        // グラフ用の日付フィルタ（別途設定可能）
+        $graphDateFrom = $request->query('graph_date_from');
+        $graphDateTo = $request->query('graph_date_to');
+
         $logs = $this->dailyLogService->getStudentPastLogs($studentId, $dateFrom, $dateTo);
 
-        return view('teacher.students.logs', compact('student', 'logs', 'dateFrom', 'dateTo'));
+        // グラフ用データ取得
+        $graphData = \App\Models\DailyLog::getGraphData($studentId, $graphDateFrom, $graphDateTo);
+
+        return view('teacher.students.logs', compact('student', 'logs', 'dateFrom', 'dateTo', 'graphDateFrom', 'graphDateTo', 'graphData'));
     }
 
 
