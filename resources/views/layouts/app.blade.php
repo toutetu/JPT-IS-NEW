@@ -37,6 +37,12 @@
                 <div class="collapse navbar-collapse show" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav me-auto">
+                        {{-- デバッグ情報（本番環境では削除推奨） --}}
+                        @guest
+                            <li class="nav-item">
+                                <span class="nav-link text-muted">未ログイン</span>
+                            </li>
+                        @endguest
                         @auth
                             @if (auth()->user()->role === 'student')
                                 <li class="nav-item">
