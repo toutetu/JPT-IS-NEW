@@ -35,20 +35,10 @@
                 </button>
 
                 <div class="navbar-collapse" id="navbarSupportedContent">
-                    <!-- Left Side Of Navbar -->
-                    <ul class="navbar-nav me-auto">
-                        {{-- デバッグ情報（本番環境では削除推奨） --}}
-                        @guest
-                            <li class="nav-item">
-                                <span class="nav-link text-muted">未ログイン</span>
-                            </li>
-                        @endguest
+                    <!-- Navbar Items -->
+                    <ul class="navbar-nav">
                         @auth
-                            <li class="nav-item">
-                                <span class="nav-link text-success">ログイン中: {{ auth()->user()->name }} ({{ auth()->user()->role }})</span>
-                            </li>
-                        @endauth
-                        @auth
+                            {{-- メニュー項目 --}}
                             @if (auth()->user()->role === 'student')
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('student.daily_logs.index') }}">マイ連絡帳</a>
@@ -59,9 +49,6 @@
                             @endif
 
                             @if (auth()->user()->role === 'teacher')
-                                <!-- <li class="nav-item"> 
-                                    <a class="nav-link" href="{{ route('teacher.dashboard') }}">ダッシュボード</a>
-                                </li> -->
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('teacher.daily_logs.index') }}">
                                         提出状況（担当クラス）
@@ -76,42 +63,36 @@
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('admin.users.index') }}">ユーザー管理</a>
                                 </li>
-                                <!-- <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('admin.assign.enrollment.form') }}">在籍割当</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('admin.assign.homeroom.form') }}">担任割当</a> -->
-                                </li>
                             @endif
                         @endauth
-
-
                     </ul>
 
-                    <!-- Right Side Of Navbar -->
+                    <!-- Spacer -->
                     <ul class="navbar-nav ms-auto">
-                        <!-- Authentication Links -->
                         @guest
+                            <li class="nav-item">
+                                <span class="nav-link text-muted">未ログイン</span>
+                            </li>
                             @if (Route::has('login'))
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
                                 </li>
                             @endif
-
-                            {{-- 新規登録リンクを非表示 --}}
-                            {{-- @if (Route::has('register'))
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
-                                </li>
-                            @endif --}}
-                        @else
+                        @endguest
+                        
+                        @auth
+                            {{-- ログイン状態 --}}
+                            <li class="nav-item">
+                                <span class="nav-link text-success">ログイン中: {{ auth()->user()->name }} ({{ auth()->user()->role }})</span>
+                            </li>
+                            {{-- ログアウト --}}
                             <li class="nav-item">
                                 <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-inline">
                                     @csrf
-                                    <button type="submit" class="nav-link btn btn-link p-0">ログアウト</button>
+                                    <button type="submit" class="nav-link btn btn-link text-decoration-none" style="padding: 0.5rem 1rem;">ログアウト</button>
                                 </form>
                             </li>
-                        @endguest
+                        @endauth
                     </ul>
                 </div>
             </div>
