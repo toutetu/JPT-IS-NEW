@@ -13,7 +13,7 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth')->except('forceLogout');
     }
 
     /**
@@ -36,5 +36,19 @@ class HomeController extends Controller
             default:
                 return view('home');
         }
+    }
+
+    /**
+     * 強制ログアウト（GETリクエスト対応）
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function forceLogout(Request $request)
+    {
+        \Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        
+        return redirect('/login')->with('status', 'ログアウトしました');
     }
 }

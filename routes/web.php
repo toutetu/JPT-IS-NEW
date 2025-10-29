@@ -5,12 +5,7 @@ use Illuminate\Support\Facades\Route;
 Auth::routes();
 
 // 緊急用：GETリクエストでログアウト（デバッグ用）
-Route::get('/force-logout', function () {
-    Auth::logout();
-    request()->session()->invalidate();
-    request()->session()->regenerateToken();
-    return redirect('/login')->with('status', 'ログアウトしました');
-});
+Route::get('/force-logout', [App\Http\Controllers\HomeController::class, 'forceLogout'])->name('force.logout');
 
 // ルートパス（/）にアクセスした場合のリダイレクト
 Route::get('/', function () {
