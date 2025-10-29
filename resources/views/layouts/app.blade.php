@@ -15,6 +15,10 @@
     
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -50,7 +54,7 @@
                                 </li> -->
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('teacher.daily_logs.index') }}">
-                                        提出状況@if($teacherAssignedClasses)（{{ $teacherAssignedClasses }}）@else（担当クラス）@endif
+                                        提出状況（担当クラス）
                                     </a>
                                 </li>
                                 <li class="nav-item">
