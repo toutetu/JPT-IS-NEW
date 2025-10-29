@@ -85,6 +85,10 @@
                             <li class="nav-item">
                                 <span class="nav-link text-success">ログイン中: {{ auth()->user()->name }} ({{ auth()->user()->role }})</span>
                             </li>
+                            {{-- マニュアル --}}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('manual.show') }}">マニュアル</a>
+                            </li>
                             {{-- ログアウト --}}
                             <li class="nav-item">
                                 <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-inline">

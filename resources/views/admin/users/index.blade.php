@@ -2,16 +2,15 @@
 
 @section('content')
 <div class="container">
-  <h1 class="h4 mb-3">ユーザー一覧</h1>
-
+  
   @if (session('status'))
-    <div class="alert alert-success">{{ session('status') }}</div>
+  <div class="alert alert-success">{{ session('status') }}</div>
   @endif
-
+  
   @if (session('error'))
-    <div class="alert alert-danger">{{ session('error') }}</div>
+  <div class="alert alert-danger">{{ session('error') }}</div>
   @endif
-
+  
   <div class="mb-3 d-flex justify-content-between align-items-center">
     <div>
       <a href="{{ route('admin.users.create') }}" class="btn btn-primary btn-sm">新規ユーザー作成</a>
@@ -22,11 +21,12 @@
       </button>
     </div>
     
-    <!-- 検索ボタン -->
-    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="toggleSearchForm()">
-      <i class="fas fa-search"></i> 検索を表示
-    </button>
   </div>
+  <h1 class="h4 mb-3">ユーザー一覧</h1>
+  <!-- 検索ボタン -->
+  <button type="button" class="btn btn-outline-secondary btn-sm" onclick="toggleSearchForm()">
+    <i class="fas fa-search"></i> 検索を表示
+  </button>
 
   <!-- 検索フォーム（初期状態は非表示） -->
   <div id="searchForm" class="card mb-4" style="display: none;">

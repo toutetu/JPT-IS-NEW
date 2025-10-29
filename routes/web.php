@@ -102,3 +102,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/assign/homeroom', [AssignmentController::class, 'homeroomForm'])->name('admin.assign.homeroom.form');
     Route::post('/admin/assign/homeroom', [AssignmentController::class, 'homeroomStore'])->name('admin.assign.homeroom.store');
 });
+
+use App\Http\Controllers\ManualController;
+
+Route::middleware('auth')->group(function () {
+    // ロール別マニュアル
+    Route::get('/manual', [ManualController::class, 'show'])->name('manual.show');
+});
