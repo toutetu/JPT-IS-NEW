@@ -4,6 +4,27 @@ use Illuminate\Support\Facades\Route;
 
 Auth::routes();
 
+// ルートパス（/）にアクセスした場合のリダイレクト
+Route::get('/', function () {
+    if (auth()->check()) {
+        // ログイン済みの場合、ロールに応じてリダイレクト
+        $user = auth()->user();
+        switch ($user->role) {
+            case 'student':
+                return redirect()->route('student.daily_logs.index');
+            case 'teacher':
+                return redirect()->route('teacher.daily_logs.index');
+            case 'admin':
+                return redirect()->route('admin.users.index');
+            default:
+                return redirect()->route('home');
+        }
+    } else {
+        // 未ログインの場合はログインページへ
+        return redirect()->route('login');
+    }
+});
+
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 use App\Http\Controllers\Student\DailyLogController;
