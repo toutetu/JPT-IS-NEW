@@ -44,6 +44,11 @@
                             </li>
                         @endguest
                         @auth
+                            <li class="nav-item">
+                                <span class="nav-link text-success">ログイン中: {{ auth()->user()->name }} ({{ auth()->user()->role }})</span>
+                            </li>
+                        @endauth
+                        @auth
                             @if (auth()->user()->role === 'student')
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('student.daily_logs.index') }}">マイ連絡帳</a>
