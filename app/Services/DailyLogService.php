@@ -101,8 +101,9 @@ class DailyLogService
 
         return DailyLog::whereIn('student_id', $studentIds)
             ->forDate($date)
-            ->with('student')
-            ->orderBy('student_id')
+            ->join('users', 'daily_logs.student_id', '=', 'users.id')
+            ->select('daily_logs.*', 'users.name as student_name')
+            ->orderBy('users.name')
             ->paginate(20);
     }
 

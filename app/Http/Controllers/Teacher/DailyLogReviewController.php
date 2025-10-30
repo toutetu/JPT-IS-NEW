@@ -22,18 +22,11 @@ class DailyLogReviewController extends Controller
             $date = $request->query('date');
             $selected = $date ?: $this->dailyLogService->getPreviousSchoolDay();
 
-            // 担当クラスの生徒ID一覧を取得
-            $studentIds = \App\Models\HomeroomAssignment::getStudentIdsForTeacher(\Auth::id());
-
             // 提出状況のサマリーを取得
             $stats = $this->dailyLogService->getTeacherClassSubmissionStats(\Auth::id(), $selected);
 
             // 一覧を取得（ページネーション対応）
-            $logs = \App\Models\DailyLog::whereIn('student_id', $studentIds)
-                ->forDate($selected)
-                ->with('student')
-                ->orderBy('student_id')
-                ->paginate(20)
+            $logs = $this->dailyLogService->getTeacherClassDailyLogs(\Auth::id(), $selected)
                 ->appends(['date' => $selected]);
 
             // 担当クラス情報を取得

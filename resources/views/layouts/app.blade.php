@@ -51,7 +51,7 @@
                             @if (auth()->user()->role === 'teacher')
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('teacher.daily_logs.index') }}">
-                                        提出状況（担当クラス）
+                                        提出状況（{{ $teacherAssignedClasses ?? '担当クラス' }}）
                                     </a>
                                 </li>
                                 <li class="nav-item">
