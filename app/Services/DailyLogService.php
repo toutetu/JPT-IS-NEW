@@ -28,7 +28,6 @@ class DailyLogService
             'submitted_at' => now(),
         ]);
     }
-
     /**
      * 日報を更新
      */
@@ -183,9 +182,14 @@ class DailyLogService
         $startDate = Carbon::create($year, $month, 1)->startOfMonth();
         $endDate = $startDate->copy()->endOfMonth();
 
+        // target_date は Model 側で date キャストされているため、pluck すると Carbon インスタンスになる。
+        // カレンダー側では文字列比較（Y-m-d）を行うため、ここで日付文字列へ正規化する。
         return DailyLog::forStudent($studentId)
             ->dateRange($startDate->toDateString(), $endDate->toDateString())
             ->pluck('target_date')
+            ->map(function ($date) {
+                return \Carbon\Carbon::parse($date)->toDateString();
+            })
             ->toArray();
     }
 
