@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container">
-    <h1 class="mb-4 text-success">学生向け 操作マニュアル</h1>
+    <h1 class="mb-4 text-success">生徒向け 操作マニュアル</h1>
 
     <div class="card mb-4 shadow-sm">
         <div class="card-header bg-info text-white">
@@ -223,7 +223,7 @@
                     <li class="list-group-item"><strong>マニュアル</strong>: クリックで本ページを表示</li>
                     <li class="list-group-item"><strong>ログアウト</strong>: クリックでサインアウト</li>
                 </ol>
-                <img src="{{ asset('storage/manual/student_nav_top.png') }}" alt="学生ナビゲーション" class="img-fluid border border-3 border-secondary mb-3 shadow-sm">
+                <img src="{{ asset('storage/manual/student_nav_top.png') }}" alt="生徒ナビゲーション" class="img-fluid border border-3 border-secondary mb-3 shadow-sm">
             </div>
         </div>
     </div>
