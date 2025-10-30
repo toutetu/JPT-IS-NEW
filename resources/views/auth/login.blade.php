@@ -57,12 +57,11 @@
                                     ログイン
                                 </button>
 
-                                {{-- パスワードリセット機能を一時的に無効化 --}}
-                                {{-- @if (Route::has('password.request'))
+                                @if (Route::has('password.request'))
                                     <a class="btn btn-link" href="{{ route('password.request') }}">
-                                        {{ __('Forgot Your Password?') }}
+                                        パスワードをお忘れですか？
                                     </a>
-                                @endif --}}
+                                @endif
                             </div>
                         </div>
                     </form>
