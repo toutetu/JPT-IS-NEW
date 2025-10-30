@@ -1,0 +1,16 @@
+# Laravel Cloud デプロイ設定
+# このファイルでデプロイコマンドを管理します
+
+deploy:
+  # デプロイ後に実行するコマンド
+  post-deploy:
+    - php artisan storage:link --force
+    - php artisan migrate --force
+    - php artisan config:cache
+    - php artisan route:cache
+    - php artisan view:cache
+
+# 注意事項:
+# - php artisan serve は開発用のため使用不可
+# - 長時間実行されるコマンド（queue:work等）は別途ワーカー設定が必要
+
