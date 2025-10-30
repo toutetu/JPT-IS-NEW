@@ -103,6 +103,17 @@ Route::middleware('auth')->group(function () {
     Route::post('/admin/assign/homeroom', [AssignmentController::class, 'homeroomStore'])->name('admin.assign.homeroom.store');
 });
 
+use App\Http\Controllers\Admin\ClassroomController;
+
+Route::middleware('auth')->group(function () {
+    // 管理者：クラス管理
+    Route::get('/admin/classrooms', [ClassroomController::class, 'index'])->name('admin.classrooms.index');
+    Route::get('/admin/classrooms/create', [ClassroomController::class, 'create'])->name('admin.classrooms.create');
+    Route::post('/admin/classrooms', [ClassroomController::class, 'store'])->name('admin.classrooms.store');
+    Route::get('/admin/classrooms/{id}/delete', [ClassroomController::class, 'delete'])->name('admin.classrooms.delete');
+    Route::delete('/admin/classrooms/{id}', [ClassroomController::class, 'destroy'])->name('admin.classrooms.destroy');
+});
+
 use App\Http\Controllers\ManualController;
 
 Route::middleware('auth')->group(function () {

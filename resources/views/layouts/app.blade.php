@@ -63,6 +63,9 @@
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('admin.users.index') }}">ユーザー管理</a>
                                 </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('admin.classrooms.index') }}">クラス管理</a>
+                                </li>
                             @endif
                         @endauth
                     </ul>
