@@ -5,10 +5,10 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\ImportCsvRequest;
+use App\Models\User;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -116,40 +116,13 @@ class UserController extends Controller
                 ->with('error', '自分自身を削除することはできません。');
         }
 
-        // ユーザーが存在するか確認
-        $user = DB::table('users')->where('id', $id)->first();
+        // ユーザー情報とクラス割り当て情報を取得
+        $user = $this->userService->getUserWithAssignment($id);
         
         if (!$user) {
             return redirect()->route('admin.users.index')
                 ->with('error', 'ユーザーが見つかりません。');
         }
-
-        // 削除確認画面で表示するため、ユーザー情報と関連データを取得
-        $studentSub = \DB::table('enrollments')
-            ->join('classrooms', 'classrooms.id', '=', 'enrollments.classroom_id')
-            ->select('enrollments.student_id', 'classrooms.name as s_class_name')
-            ->where('enrollments.student_id', $id)
-            ->where('enrollments.is_active', true);
-
-        $teacherSub = \DB::table('homeroom_assignments')
-            ->join('classrooms', 'classrooms.id', '=', 'homeroom_assignments.classroom_id')
-            ->select('homeroom_assignments.teacher_id', 'classrooms.name as t_class_name')
-            ->where('homeroom_assignments.teacher_id', $id)
-            ->whereNull('homeroom_assignments.until_date');
-
-        $user = DB::table('users')
-            ->leftJoinSub($studentSub, 'stu', function ($join) {
-                $join->on('stu.student_id', '=', 'users.id');
-            })
-            ->leftJoinSub($teacherSub, 'tea', function ($join) {
-                $join->on('tea.teacher_id', '=', 'users.id');
-            })
-            ->select([
-                'users.id', 'users.name', 'users.email', 'users.role', 'users.created_at',
-                \DB::raw('COALESCE(stu.s_class_name, tea.t_class_name) as assigned_class'),
-            ])
-            ->where('users.id', $id)
-            ->first();
 
         return view('admin.users.delete', compact('user'));
     }
@@ -165,7 +138,7 @@ class UserController extends Controller
         }
 
         // ユーザーが存在するか確認
-        $user = \App\Models\User::find($id);
+        $user = User::find($id);
         
         if (!$user) {
             return redirect()->route('admin.users.index')

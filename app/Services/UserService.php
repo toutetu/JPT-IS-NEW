@@ -60,6 +60,43 @@ class UserService
     }
 
     /**
+     * ユーザー情報をクラス割り当て情報と共に取得
+     */
+    public function getUserWithAssignment(int $userId): ?object
+    {
+        $user = User::with([
+            'enrollments' => function ($query) {
+                $query->where('is_active', true)->with('classroom');
+            },
+            'homeroomAssignments' => function ($query) {
+                $query->whereNull('until_date')->with('classroom');
+            }
+        ])->find($userId);
+
+        if (!$user) {
+            return null;
+        }
+
+        // クラス割り当て情報を取得
+        $assignedClass = null;
+        if ($user->role === 'student' && $user->enrollments->isNotEmpty()) {
+            $assignedClass = $user->enrollments->first()->classroom->name ?? null;
+        } elseif ($user->role === 'teacher' && $user->homeroomAssignments->isNotEmpty()) {
+            $assignedClass = $user->homeroomAssignments->first()->classroom->name ?? null;
+        }
+
+        // stdClassオブジェクトとして返す（Viewとの互換性のため）
+        return (object) [
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'role' => $user->role,
+            'created_at' => $user->created_at,
+            'assigned_class' => $assignedClass,
+        ];
+    }
+
+    /**
      * CSVからユーザーを一括作成
      */
     public function importUsersFromCsv(string $filePath): array
