@@ -30,6 +30,7 @@
             <th>クラス名</th>
             <th>在籍生徒数</th>
             <th>担任</th>
+            <th>担任変更</th>
             <th>操作</th>
           </tr>
         </thead>
@@ -55,6 +56,19 @@
                 {{ $currentTeacher?->teacher?->name ?? '未設定' }}
               </td>
               <td>
+                @if($currentTeacher?->teacher)
+                  <a href="{{ route('admin.assign.homeroom.form', ['teacher_id' => $currentTeacher->teacher->id]) }}" 
+                     class="btn btn-sm btn-outline-primary">
+                    <i class="fas fa-user-edit"></i> 変更
+                  </a>
+                @else
+                  <a href="{{ route('admin.assign.homeroom.form') }}" 
+                     class="btn btn-sm btn-outline-secondary">
+                    <i class="fas fa-user-plus"></i> 割当
+                  </a>
+                @endif
+              </td>
+              <td>
                 <a href="{{ route('admin.classrooms.delete', $classroom->id) }}" 
                    class="btn btn-sm btn-outline-danger">
                   <i class="fas fa-trash"></i> 削除
@@ -63,7 +77,7 @@
             </tr>
           @empty
             <tr>
-              <td colspan="6" class="text-center text-muted">クラスが登録されていません。</td>
+              <td colspan="7" class="text-center text-muted">クラスが登録されていません。</td>
             </tr>
           @endforelse
         </tbody>
