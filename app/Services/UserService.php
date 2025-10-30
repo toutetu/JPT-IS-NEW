@@ -45,7 +45,14 @@ class UserService
     public function getUsersWithAssignments(string $search = null, string $role = null)
     {
         $query = User::query()
-            ->with(['enrollments.classroom', 'homeroomAssignments.classroom'])
+            ->with([
+                'enrollments' => function ($query) {
+                    $query->where('is_active', true)->with('classroom.grade');
+                },
+                'homeroomAssignments' => function ($query) {
+                    $query->whereNull('until_date')->with('classroom.grade');
+                }
+            ])
             ->select(['id', 'name', 'email', 'role', 'created_at']);
 
         if ($search) {
@@ -56,7 +63,25 @@ class UserService
             $query->byRole($role);
         }
 
-        return $query->orderBy('id', 'desc')->paginate(10);
+        $users = $query->orderBy('id', 'desc')->paginate(10);
+
+        // 各ユーザーにassigned_class属性を追加
+        $users->getCollection()->transform(function ($user) {
+            $assignedClass = null;
+
+            if ($user->role === 'student' && $user->enrollments->isNotEmpty()) {
+                $enrollment = $user->enrollments->first();
+                $assignedClass = $enrollment->classroom->name ?? null;
+            } elseif ($user->role === 'teacher' && $user->homeroomAssignments->isNotEmpty()) {
+                $assignment = $user->homeroomAssignments->first();
+                $assignedClass = $assignment->classroom->name ?? null;
+            }
+
+            $user->assigned_class = $assignedClass;
+            return $user;
+        });
+
+        return $users;
     }
 
     /**

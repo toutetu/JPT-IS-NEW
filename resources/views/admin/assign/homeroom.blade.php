@@ -43,7 +43,7 @@
           @foreach($classes as $c)
             <option value="{{ $c->id }}" 
             @selected(old('classroom_id', $currentHomeroom->classroom_id ?? null) == $c->id)>
-            {{ $c->cname }}
+            {{ $c->name }}
             </option>
           @endforeach
         </select>

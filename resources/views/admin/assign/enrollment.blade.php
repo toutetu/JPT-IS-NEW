@@ -47,7 +47,7 @@
           @foreach($classes as $c)
             <option value="{{ $c->id }}" 
             @selected(old('classroom_id', $currentEnrollment->classroom_id ?? null) == $c->id)>
-            {{ $c->cname }}
+            {{ $c->name }}
             </option>
           @endforeach
         </select>
