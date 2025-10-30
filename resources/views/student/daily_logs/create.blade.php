@@ -14,6 +14,16 @@
     </div>
   @endif
 
+  {{-- 所属情報 --}}
+  <div class="card mb-3">
+    <div class="card-body py-2">
+      <div class="d-flex flex-wrap align-items-center gap-3">
+        <div><strong>所属クラス</strong>：{{ $classroomName ?? '未設定' }}</div>
+        <div><strong>担任</strong>：{{ $homeroomTeacherName ?? '未割り当て' }}</div>
+      </div>
+    </div>
+  </div>
+
   <form method="post" action="{{ route('student.daily_logs.store') }}">
     @csrf
 

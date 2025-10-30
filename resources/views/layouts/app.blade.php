@@ -107,7 +107,6 @@
         </main>
     </div>
     
-    <!-- Bootstrap JavaScript -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap JS は Vite 経由（resources/js/app.js 内で import） -->
 </body>
 </html>

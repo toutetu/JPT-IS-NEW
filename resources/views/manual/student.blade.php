@@ -89,9 +89,11 @@
                 </div>
                 <h4 class="h6 mt-2 text-success"><i class="fas fa-eye"></i> 画面の見方</h4>
                 <ul class="list-group mb-3">
+                    <li class="list-group-item"><strong>所属情報</strong>: 画面上部のカードに <strong>所属クラス</strong> と <strong>担任</strong> を表示</li>
                     <li class="list-group-item"><strong>対象日</strong>: 連絡帳の対象日（曜日付きで表示）</li>
                     <li class="list-group-item"><strong>体調</strong>: 体調スコア（1-5）</li>
                     <li class="list-group-item"><strong>メンタル</strong>: メンタルスコア（1-5）</li>
+                    <li class="list-group-item"><strong>内容(冒頭)</strong>: 本文の先頭を表示（<strong>スマホ:10文字</strong> / <strong>PC:20文字</strong>、超える場合は末尾に「…」）</li>
                     <li class="list-group-item"><strong>既読</strong>: 👍既読 または 未読</li>
                     <li class="list-group-item"><strong>操作</strong>: 詳細ボタン</li>
                     <li class="list-group-item"><strong>ページネーション</strong>: 改善されたページネーション（「＞」「＜」文字が表示されない）</li>
@@ -102,6 +104,11 @@
                     <li class="list-group-item"><strong>詳細確認</strong>: 「詳細」ボタンで内容を確認</li>
                     <li class="list-group-item"><strong>編集</strong>: 未読の場合は詳細画面で編集可能</li>
                 </ol>
+                <div class="alert alert-secondary">
+                    <strong>期間検索</strong>: 一覧の <strong>ページネーション直下</strong>に期間検索フォームが<strong>常時表示</strong>されます。<br>
+                    「開始日」「終了日」を指定して「検索」を押すと対象期間のみ表示されます。<br>
+                    「リセット」で検索条件を解除して全件表示に戻ります。
+                </div>
                 <img src="{{ asset('storage/manual/student_daily_logs_index.png') }}" alt="マイ連絡帳一覧" class="img-fluid border border-3 border-success mb-3 shadow-sm">
             </div>
             
@@ -120,6 +127,7 @@
                     <li class="list-group-item"><strong>メンタルスコア</strong>: 1-5の数値（ラジオボタン形式、初期値3）</li>
                     <li class="list-group-item"><strong>本文</strong>: 自由記述（必須）</li>
                 </ul>
+                <div class="alert alert-secondary">画面上部に <strong>所属クラス</strong> と <strong>担任</strong> が表示されます。</div>
                 <h4 class="h6 mt-2 text-success"><i class="fas fa-cog"></i> 操作方法</h4>
                 <ol class="list-group list-group-numbered mb-3">
                     <li class="list-group-item">対象日を変更したい場合は日付を選択</li>
@@ -149,6 +157,7 @@
                     <li class="list-group-item"><strong>提出内容</strong>: 体調・メンタルスコア、本文</li>
                     <li class="list-group-item"><strong>編集ボタン</strong>: 未読時のみ表示</li>
                 </ul>
+                <div class="alert alert-secondary">画面上部に <strong>所属クラス</strong> と <strong>担任</strong> が表示されます。</div>
                 <h4 class="h6 mt-2 text-success"><i class="fas fa-cog"></i> 操作方法</h4>
                 <ol class="list-group list-group-numbered mb-3">
                     <li class="list-group-item"><strong>内容確認</strong>: 提出内容を確認</li>

@@ -16,14 +16,8 @@ class DashboardController extends Controller
     {
         abort_if(Auth::user()->role !== 'teacher', 403);
 
-        // この先生の担当クラス情報を取得
-        $assignedClasses = \App\Models\HomeroomAssignment::getAssignedClassesForTeacher(Auth::id());
-
-        // 各クラスの生徒数を取得
-        foreach ($assignedClasses as $class) {
-            $classroom = \App\Models\Classroom::find($class['classroom_id']);
-            $class['student_count'] = $classroom->current_student_count;
-        }
+        // この先生の担当クラス情報を取得（サービスへ委譲）
+        $assignedClasses = $this->dailyLogService->getAssignedClassesWithCounts(Auth::id());
 
         // 今日の提出状況のサマリーを取得
         $todayStats = $this->dailyLogService->getTeacherTodayStats(Auth::id());

@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Services\DailyLogService;
 
 class ViewServiceProvider extends ServiceProvider
 {
@@ -45,6 +46,19 @@ class ViewServiceProvider extends ServiceProvider
                 })->implode('・');
 
                 $view->with('teacherAssignedClasses', $classNames);
+            }
+        });
+
+        // 生徒ビュー共通: 所属情報（学年・クラス・担任）を提供
+        View::composer('student.*', function ($view) {
+            if (Auth::check() && Auth::user()->role === 'student') {
+                $service = app(DailyLogService::class);
+                $aff = $service->getStudentAffiliation(Auth::id());
+                $view->with([
+                    'classroomName' => $aff['classroom_name'] ?? null,
+                    'gradeName' => $aff['grade_name'] ?? null,
+                    'homeroomTeacherName' => $aff['homeroom_teacher_name'] ?? null,
+                ]);
             }
         });
     }

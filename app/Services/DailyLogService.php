@@ -66,6 +66,23 @@ class DailyLogService
     }
 
     /**
+     * 生徒の日報一覧を期間でフィルタして取得
+     */
+    public function getStudentDailyLogsFiltered(int $studentId, ?string $dateFrom, ?string $dateTo, int $perPage = 10)
+    {
+        $query = DailyLog::forStudent($studentId)->orderByDesc('target_date');
+
+        if ($dateFrom) {
+            $query->where('target_date', '>=', $dateFrom);
+        }
+        if ($dateTo) {
+            $query->where('target_date', '<=', $dateTo);
+        }
+
+        return $query->paginate($perPage);
+    }
+
+    /**
      * 生徒の特定日付の日報を取得
      */
     public function getStudentDailyLogForDate(int $studentId, string $date): ?DailyLog
@@ -216,5 +233,50 @@ class DailyLogService
             'unread_today' => $unreadToday,
             'today' => $today,
         ];
+    }
+
+    /**
+     * 生徒の所属情報（学年・クラス・担任）を取得
+     */
+    public function getStudentAffiliation(int $studentId): array
+    {
+        $currentEnrollment = \App\Models\Enrollment::forStudent($studentId)
+            ->active()
+            ->with([
+                'classroom.grade',
+                'classroom.homeroomAssignments' => function ($q) {
+                    $q->current()->with('teacher');
+                },
+            ])
+            ->first();
+
+        return [
+            'classroom_name' => $currentEnrollment?->classroom?->name,
+            'grade_name' => $currentEnrollment?->classroom?->grade?->name,
+            'homeroom_teacher_name' => $currentEnrollment?->classroom?->current_teacher?->name,
+        ];
+    }
+
+    /**
+     * 教師の現在担当クラス一覧（学年名・クラス名・在籍数）を取得
+     */
+    public function getAssignedClassesWithCounts(int $teacherId)
+    {
+        $assigned = \App\Models\HomeroomAssignment::forTeacher($teacherId)
+            ->current()
+            ->with(['classroom.grade', 'classroom.enrollments' => function ($q) {
+                $q->where('is_active', true);
+            }])
+            ->get();
+
+        return $assigned->map(function ($assignment) {
+            $classroom = $assignment->classroom;
+            return [
+                'classroom_id' => $classroom->id,
+                'classroom_name' => $classroom->name,
+                'grade_name' => $classroom->grade?->name,
+                'student_count' => $classroom->enrollments->count(),
+            ];
+        });
     }
 }

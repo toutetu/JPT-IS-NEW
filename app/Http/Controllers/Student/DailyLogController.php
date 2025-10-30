@@ -17,13 +17,30 @@ class DailyLogController extends Controller
     ) {}
 
     // 一覧（自分の提出のみ）
-    public function index()
+    public function index(Request $request)
     {
         abort_if(Auth::user()->role !== 'student', 403);
 
-        $logs = $this->dailyLogService->getStudentDailyLogs(Auth::id());
+        $dateFrom = $request->query('date_from');
+        $dateTo = $request->query('date_to');
 
-        return view('student.daily_logs.index', compact('logs'));
+        $logs = $this->dailyLogService->getStudentDailyLogsFiltered(Auth::id(), $dateFrom, $dateTo);
+        $logs->appends(['date_from' => $dateFrom, 'date_to' => $dateTo]);
+
+        // 所属クラスと担任取得（サービスへ委譲）
+        $affiliation = $this->dailyLogService->getStudentAffiliation(Auth::id());
+        $classroomName = $affiliation['classroom_name'] ?? null;
+        $gradeName = $affiliation['grade_name'] ?? null;
+        $homeroomTeacherName = $affiliation['homeroom_teacher_name'] ?? null;
+
+        return view('student.daily_logs.index', compact(
+            'logs',
+            'classroomName',
+            'gradeName',
+            'homeroomTeacherName',
+            'dateFrom',
+            'dateTo'
+        ));
     }
 
     // カレンダー表示
