@@ -25,6 +25,13 @@
                         <li><a href="#csv-enrollment">CSV一括クラス割り当て機能</a></li>
                     </ul>
                 </li>
+                <li><a href="#classroom-management">クラス管理</a>
+                    <ul>
+                        <li><a href="#classroom-list">クラス一覧画面</a></li>
+                        <li><a href="#classroom-create">クラス作成画面</a></li>
+                        <li><a href="#classroom-delete">クラス削除画面</a></li>
+                    </ul>
+                </li>
                 <li><a href="#navigation">ナビゲーション</a>
                     <ul>
                         <li><a href="#nav-top">ナビゲーション（右上）</a></li>
@@ -182,15 +189,116 @@
         </div>
     </div>
 
-    <!-- セクション3: ナビゲーション -->
+    <!-- セクション3: クラス管理 -->
+    <div class="card mb-4 border-info shadow-sm" id="classroom-management">
+        <div class="card-header bg-info text-white">
+            <h2 class="h4 mb-0"><span class="badge bg-light text-info me-2 fs-6">3</span>クラス管理</h2>
+        </div>
+        <div class="card-body">
+            <p class="lead mb-4">「クラス管理」からクラスの追加・削除・担任変更を行います。</p>
+            
+            <div class="border-start border-info border-4 ps-3 mb-4">
+                <h3 class="h5 mt-3" id="classroom-list">
+                    <span class="badge bg-info me-2">3-1</span>クラス一覧画面 
+                    <small class="ms-2"><a href="{{ url('/admin/classrooms') }}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-info">＜リンク＞</a></small>
+                </h3>
+                <div class="alert alert-info mb-3">
+                    <strong class="text-info">【画面タイトル】</strong> <span class="fs-5">クラス管理</span>
+                </div>
+                <h4 class="h6 mt-2 text-info"><i class="fas fa-eye"></i> 画面の見方</h4>
+                <ul class="list-group mb-3">
+                    <li class="list-group-item"><strong>クラス一覧</strong>: 学年・クラス名・在籍生徒数・担任の一覧</li>
+                    <li class="list-group-item"><strong>在籍生徒数</strong>: 現在在籍中の生徒数を表示</li>
+                    <li class="list-group-item"><strong>担任</strong>: 現在担当している教師名を表示（未設定の場合は「未設定」）</li>
+                    <li class="list-group-item"><strong>担任変更</strong>: 担任の変更・割当ボタン</li>
+                    <li class="list-group-item"><strong>削除</strong>: クラスの削除ボタン</li>
+                </ul>
+                <h4 class="h6 mt-2 text-success"><i class="fas fa-cog"></i> 操作方法</h4>
+                <ol class="list-group list-group-numbered mb-3">
+                    <li class="list-group-item"><strong>新規クラス作成</strong>: 「新規クラス作成」ボタンをクリック</li>
+                    <li class="list-group-item"><strong>担任を変更</strong>: 
+                        <ul class="mt-2">
+                            <li>担任が設定済み: 「変更」ボタン → 担任割当画面へ</li>
+                            <li>担任が未設定: 「割当」ボタン → 担任割当画面へ</li>
+                        </ul>
+                    </li>
+                    <li class="list-group-item"><strong>クラス削除</strong>: 「削除」ボタン → 削除確認画面へ</li>
+                </ol>
+                <h4 class="h6 mt-2 text-warning"><i class="fas fa-exclamation-triangle"></i> 注意事項</h4>
+                <ul class="list-group mb-3">
+                    <li class="list-group-item">在籍中の生徒がいるクラスは削除できません</li>
+                    <li class="list-group-item">担当中の教師がいるクラスは削除できません</li>
+                </ul>
+                <img src="{{ asset('storage/manual/admin_classrooms_index.png') }}" alt="クラス一覧" class="img-fluid border border-3 border-info mb-3 shadow-sm">
+            </div>
+            
+            <div class="border-start border-info border-4 ps-3 mb-4">
+                <h3 class="h5 mt-4" id="classroom-create">
+                    <span class="badge bg-info me-2">3-2</span>クラス作成画面 
+                    <small class="ms-2"><a href="{{ url('/admin/classrooms/create') }}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-info">＜リンク＞</a></small>
+                </h3>
+                <div class="alert alert-info mb-3">
+                    <strong class="text-info">【画面タイトル】</strong> <span class="fs-5">新規クラス作成</span>
+                </div>
+                <h4 class="h6 mt-2 text-info"><i class="fas fa-eye"></i> 画面の見方</h4>
+                <ul class="list-group mb-3">
+                    <li class="list-group-item"><strong>学年選択</strong>: クラスが属する学年を選択</li>
+                    <li class="list-group-item"><strong>クラス名入力</strong>: クラス名を入力（例: 1年A組、2年B組）</li>
+                </ul>
+                <h4 class="h6 mt-2 text-success"><i class="fas fa-cog"></i> 操作方法</h4>
+                <ol class="list-group list-group-numbered mb-3">
+                    <li class="list-group-item">学年をドロップダウンから選択</li>
+                    <li class="list-group-item">クラス名を入力（学年情報を含めることを推奨）</li>
+                    <li class="list-group-item">「クラスを作成」ボタンをクリック</li>
+                </ol>
+                <h4 class="h6 mt-2 text-warning"><i class="fas fa-exclamation-triangle"></i> 注意事項</h4>
+                <ul class="list-group mb-3">
+                    <li class="list-group-item">同じ学年内で同じクラス名は登録できません</li>
+                </ul>
+                <img src="{{ asset('storage/manual/admin_classrooms_create.png') }}" alt="クラス作成" class="img-fluid border border-3 border-info mb-3 shadow-sm">
+            </div>
+            
+            <div class="border-start border-info border-4 ps-3 mb-4">
+                <h3 class="h5 mt-4" id="classroom-delete">
+                    <span class="badge bg-info me-2">3-3</span>クラス削除画面
+                </h3>
+                <div class="alert alert-info mb-3">
+                    <strong class="text-info">【画面タイトル】</strong> <span class="fs-5">クラス削除確認</span>
+                </div>
+                <h4 class="h6 mt-2 text-info"><i class="fas fa-eye"></i> 画面の見方</h4>
+                <ul class="list-group mb-3">
+                    <li class="list-group-item"><strong>クラス情報</strong>: 削除対象のクラス詳細情報</li>
+                    <li class="list-group-item"><strong>在籍生徒数</strong>: 現在在籍中の生徒数</li>
+                    <li class="list-group-item"><strong>担任</strong>: 現在の担任名</li>
+                    <li class="list-group-item"><strong>警告メッセージ</strong>: 削除できない理由を表示</li>
+                </ul>
+                <h4 class="h6 mt-2 text-success"><i class="fas fa-cog"></i> 操作方法</h4>
+                <ol class="list-group list-group-numbered mb-3">
+                    <li class="list-group-item">クラス情報を確認</li>
+                    <li class="list-group-item">警告メッセージがないことを確認</li>
+                    <li class="list-group-item">「削除を実行」ボタンをクリック</li>
+                    <li class="list-group-item">確認ダイアログで「OK」を選択</li>
+                </ol>
+                <h4 class="h6 mt-2 text-danger"><i class="fas fa-skull-crossbones"></i> 削除の影響</h4>
+                <ul class="list-group mb-3">
+                    <li class="list-group-item text-danger">過去の在籍記録が削除されます</li>
+                    <li class="list-group-item text-danger">過去の担任記録が削除されます</li>
+                    <li class="list-group-item text-danger">この操作は取り消すことができません</li>
+                </ul>
+                <img src="{{ asset('storage/manual/admin_classrooms_delete.png') }}" alt="クラス削除" class="img-fluid border border-3 border-info mb-3 shadow-sm">
+            </div>
+        </div>
+    </div>
+
+    <!-- セクション4: ナビゲーション -->
     <div class="card mb-4 border-warning shadow-sm" id="navigation">
         <div class="card-header bg-warning text-dark">
-            <h2 class="h4 mb-0"><span class="badge bg-light text-warning me-2 fs-6">3</span>ナビゲーション</h2>
+            <h2 class="h4 mb-0"><span class="badge bg-light text-warning me-2 fs-6">4</span>ナビゲーション</h2>
         </div>
         <div class="card-body">
             <div class="border-start border-warning border-4 ps-3 mb-4">
                 <h3 class="h5 mt-3" id="nav-top">
-                    <span class="badge bg-warning text-dark me-2">3-1</span>ナビゲーション（右上）
+                    <span class="badge bg-warning text-dark me-2">4-1</span>ナビゲーション（右上）
                 </h3>
                 <div class="alert alert-warning mb-3">
                     <strong class="text-warning">【画面タイトル】</strong> <span class="fs-5">ナビゲーション</span>
