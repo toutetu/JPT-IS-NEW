@@ -41,6 +41,11 @@
         </div>
     </div>
 
+    <div class="alert alert-warning mb-4">
+        <i class="fas fa-exclamation-triangle"></i> 
+        <strong>重要なお知らせ</strong>: パスワードリセット機能（メール送信）は現在未実装です。ユーザーがパスワードを忘れた場合は、管理者が新しいパスワードを設定してください。
+    </div>
+
     <!-- セクション1: ユーザー管理 -->
     <div class="card mb-4 border-primary shadow-sm" id="user-management">
         <div class="card-header bg-primary text-white">

@@ -45,6 +45,11 @@
         画像はダミーです。指定いただくスクリーンショットをご提供後に差し替えます。
     </div>
 
+    <div class="alert alert-warning mb-4">
+        <i class="fas fa-exclamation-triangle"></i> 
+        <strong>重要なお知らせ</strong>: パスワードリセット機能（メール送信）は現在未実装です。パスワードを忘れた場合は、システム管理者にお問い合わせください。
+    </div>
+
     <div class="card mb-4 border-info shadow-sm" id="login">
         <div class="card-header bg-info text-white">
             <h2 class="h4 mb-0"><span class="badge bg-light text-info me-2 fs-6">1</span>ログイン</h2>

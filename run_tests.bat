@@ -1,7 +1,7 @@
 @echo off
-REM JPT-IS-NEW 自動テスト実行バッチファイル
+REM ContactBook 自動テスト実行バッチファイル
 
-echo === JPT-IS-NEW 自動テスト実行 ===
+echo === ContactBook 自動テスト実行 ===
 echo 開始時刻: %date% %time%
 echo.
 

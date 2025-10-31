@@ -8,6 +8,12 @@
                 <div class="card-header">パスワードリセット</div>
 
                 <div class="card-body">
+                    <!-- 未実装の注意書き -->
+                    <div class="alert alert-warning mb-3" role="alert">
+                        <i class="fas fa-exclamation-triangle"></i> 
+                        <strong>注意</strong>: メール送信機能は現在未実装です。パスワードを忘れた場合は、システム管理者にお問い合わせください。
+                    </div>
+
                     @if (session('status'))
                         <div class="alert alert-success" role="alert">
                             {{ session('status') }}

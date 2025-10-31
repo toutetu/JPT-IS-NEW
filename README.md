@@ -1,4 +1,4 @@
-# JPT-IS-NEW
+# ContactBook
 
 JPT Web課題1の実装リポジトリです。  
 学校向け連絡帳システムを Laravel で構築しています。

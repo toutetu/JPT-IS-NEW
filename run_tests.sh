@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# JPT-IS-NEW 自動テスト実行スクリプト
+# ContactBook 自動テスト実行スクリプト
 
-echo "=== JPT-IS-NEW 自動テスト実行 ==="
+echo "=== ContactBook 自動テスト実行 ==="
 echo "開始時刻: $(date)"
 echo ""
 

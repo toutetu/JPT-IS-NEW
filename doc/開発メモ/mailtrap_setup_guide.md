@@ -136,7 +136,7 @@ php artisan cache:clear
    MAIL_PASSWORD=<Mailtrapのパスワード>
    MAIL_ENCRYPTION=tls
    MAIL_FROM_ADDRESS=noreply@example.com
-   MAIL_FROM_NAME=JPT-IS-NEW
+   MAIL_FROM_NAME=ContactBook
    ```
 
 5. **保存して再デプロイ**

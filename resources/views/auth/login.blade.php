@@ -67,6 +67,56 @@
                     </form>
                 </div>
             </div>
+
+            <!-- テスト用アカウント情報 -->
+            <div class="card mt-4 border-info">
+                <div class="card-header bg-info text-white">
+                    <i class="fas fa-info-circle"></i> テスト用アカウント
+                </div>
+                <div class="card-body">
+                    <p class="mb-3 text-muted small">
+                        以下のテストアカウントでログインできます。
+                    </p>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-bordered mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>ロール</th>
+                                    <th>メールアドレス</th>
+                                    <th>パスワード</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><span class="badge bg-danger">システム管理者</span></td>
+                                    <td><code>admin@example.com</code></td>
+                                    <td><code>Passw0rd!</code></td>
+                                </tr>
+                                <tr>
+                                    <td><span class="badge bg-success">教師</span></td>
+                                    <td><code>teacher1@example.com</code></td>
+                                    <td><code>Passw0rd!</code></td>
+                                </tr>
+                                <tr>
+                                    <td><span class="badge bg-primary">生徒</span></td>
+                                    <td><code>student001@example.com</code></td>
+                                    <td><code>Passw0rd!</code></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="mt-3">
+                        <p class="mb-0 small text-muted">
+                            <i class="fas fa-book"></i> 
+                            全てのテストアカウントは
+                            <a href="https://github.com/{{ config('app.github_repo', 'your-repo') }}/blob/main/doc/アプリケーションのマニュアル/テストアカウント一覧.md" target="_blank" class="text-decoration-none">
+                                テストアカウント一覧.md
+                            </a>
+                            をご確認ください。
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
